@@ -9,6 +9,9 @@
 #endif
 
 #include "headers/Game.h"
+#include "headers/Board.h"
+#include "headers/Piece.h"
+#include <memory>
 
 int main() {
     #ifdef __linux__
@@ -21,9 +24,13 @@ int main() {
 //    std::cout << c << "\n";
 //    delete c;
 
-    Game jocNou;
+    Board tabela;
 
-    jocNou.runGame();
+    std::cerr << tabela << "\n";
+
+//    Game jocNou;
+
+//    jocNou.runGame();
 
 //      sf::RenderWindow window;
 //     NOTE: sync with env variable APP_WINDOW from .github/workflows/cmake.yml:30

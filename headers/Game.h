@@ -5,14 +5,14 @@
 #ifndef OOP_GAME_H
 #define OOP_GAME_H
 
+class Board;
+
 #include <ostream>
-#include <assert.h>
+#include "Board.h"
+#include <memory>
 #include <array>
 #include <SFML/Graphics.hpp>
-
-namespace GameConsts{
-    const int boardSideSize = 14;
-}
+#include "GameConsts.h"
 
 enum class TurnTypes{
     redStart,
@@ -23,13 +23,18 @@ enum class TurnTypes{
 
 class Game {
 private:
+    std::unique_ptr<Board> table;
     sf::RenderWindow gameWindow;
     TurnTypes currentTurnType;
     void renderGame();
 public:
     Game();
+
+    virtual ~Game();
+
     void runGame();
 
+    friend std::ostream &operator<<(std::ostream &os, const Game &game);
 };
 
 

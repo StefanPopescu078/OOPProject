@@ -10,11 +10,11 @@
 
 
 Game::Game() {
-
+    table = std::unique_ptr<Board>(new Board);
 }
 
 void Game::runGame() {
-    gameWindow.create(sf::VideoMode({1200, 1000}), "Stratego", sf::Style::Titlebar | sf::Style::Close);
+    gameWindow.create(sf::VideoMode({GameConsts::windowWidth, GameConsts::windowHeight}), "Stratego", sf::Style::Titlebar | sf::Style::Close);
 
     gameWindow.setVerticalSyncEnabled(true);
     gameWindow.setFramerateLimit(60);
@@ -47,6 +47,15 @@ void Game::runGame() {
 }
 
 void Game::renderGame() {
+
+}
+
+std::ostream &operator<<(std::ostream &out, const Game &game) {
+    out << "table: " << game.table << "\n";
+    return out;
+}
+
+Game::~Game() {
 
 }
 
