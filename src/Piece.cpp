@@ -268,11 +268,9 @@ std::vector<std::pair<int, int>> Empty::canSee(int x, int y, const Board &curren
 
 /************************* Piece ***********************************/
 
-Piece::~Piece() {
+Piece::~Piece() = default;
 
-}
-
-Piece::Piece(Piece &p1) : side(p1.side) { }
+Piece::Piece(const Piece &p1) : side(p1.side), texture(p1.texture) { }
 
 Piece::Piece(const sideType & type = sideType::None) : side(type){ }
 

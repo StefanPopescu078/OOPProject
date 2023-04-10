@@ -30,7 +30,7 @@ private:
 public:
     Game();
 
-    virtual ~Game();
+    ~Game();
 
     void runGame();
 

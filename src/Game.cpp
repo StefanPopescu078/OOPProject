@@ -11,6 +11,7 @@
 
 Game::Game() {
     table = std::unique_ptr<Board>(new Board);
+    currentTurnType = TurnTypes::redStart;
 }
 
 void Game::runGame() {

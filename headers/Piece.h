@@ -25,9 +25,9 @@ private:
     sideType side;
     sf::Sprite texture;
 public:
-//    Piece();
+    Piece();
     explicit Piece(const sideType &);
-    Piece(Piece & p1);
+    Piece(const Piece & p1);
     virtual ~Piece(); // are clase derivate
     virtual std::vector<std::pair<int, int>> accessible(int x, int y) const = 0;
     virtual std::vector<Terrain> getPassableTerrain() const = 0;

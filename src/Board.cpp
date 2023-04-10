@@ -33,12 +33,12 @@ Board::Board() {
 
 
     // temporara pentru testare
-    pieces[0][0] = std::shared_ptr<Empty>(new Empty(sideType::None));
+    pieces[0][0] = std::make_shared<Empty>(sideType::None);
     for(int i = 0; i < GameConsts::boardSideSize; i++)
         for(int j = 0; j < GameConsts::boardSideSize; j++)
             if(i != 0 || j != 0)
                 pieces[i][j] = pieces[0][0];
-    pieces[0][1] = std::shared_ptr<Marshal>(new Marshal(sideType::Red));
+    pieces[0][1] = std::make_shared<Marshal>(sideType::Red);
 }
 
 Board::~Board() {
@@ -51,24 +51,38 @@ std::ostream &operator<<(std::ostream &out, const Board &board) {
     for(int i = 0; i < GameConsts::boardSideSize; i++)
         for (int j = 0; j < GameConsts::boardSideSize; j++) {
             // din cate inteleg, e cam hacky sa obtin pointer-ul raw si sa accesez obiectul prin el
-            out << "[ " << i << " " << j << " ] : piece - " << *(board.getPiece(i, j).get()) << " ; terrain - " << static_cast<int>(board.getTerrain(i, j)) << "\n";
+            out << "[ " << i << " " << j << " ] : piece - " << (*board.pieces[i][j]) << " ; terrain - " << static_cast<int>(board.getTerrain(i, j)) << "\n";
         }
     return out;
 }
 
-Terrain Board::getTerrain(const int &x, const int &y) const {
-    assert(x >= 0 && y >= 0 && x < GameConsts::boardSideSize && y < GameConsts::boardSideSize); // debugging
-
+Terrain Board::getTerrain(int x, int y) const {
+    if(!(x >= 0 && y >= 0 && x < GameConsts::boardSideSize && y < GameConsts::boardSideSize)) // debugging
+        throw "Invalid coordinates in Board::getTerrain";
     return cellTypes[x][y];
 }
 
-std::shared_ptr<Piece> Board::getPiece(const int &x, const int &y) const {
-    assert(x >= 0 && y >= 0 && x < GameConsts::boardSideSize && y < GameConsts::boardSideSize); // debugging
-
-    return std::shared_ptr<Piece>(pieces[x][y]);
+std::shared_ptr<Piece> Board::getPiece(int x, int y) const {
+    if(!(x >= 0 && y >= 0 && x < GameConsts::boardSideSize && y < GameConsts::boardSideSize)) // debugging
+        throw "Invalid coordinates in Board::getPiece";
+    return pieces[x][y];
 }
 
-Board::Board(Board &b1) {
-    cellTypes = b1.cellTypes; // se face copierea propriu-zisa a
+Board::Board(const Board &b1) {
+    cellTypes = b1.cellTypes; // se face copierea propriu-zisa a tipurilor de celule
+//    std::map<Piece*, std::shared_ptr<Piece>> usedPointers; // pentru o tabela avem cate o piesa de fiecare tip, fiecare board cu tabela ei
+//    for(int i = 0; i < GameConsts::boardSideSize; i++) // fiecare pozitie din tabela e un pointer catre un obiect, (fiecare piesa ar trebui sa fie singleton per tabela?)
+//        for(int j = 0; j < GameConsts::boardSideSize; j++){ // se va modifica ulterior cu clone
+//            if(usedPointers.find(b1.pieces[i][j].get()) == usedPointers.end()){
+//                usedPointers[b1.pieces[i][j].get()] = pieces[i][j] = std::make_shared<Piece>(*(b1.pieces[i][j].get())); ///se apeleaza copy constructor-ul pentru piesa
+//            }
+//            else{
+//                pieces[i][j] = usedPointers[b1.pieces[i][j].get()];
+//            }
+//        }
+}
 
+Board &Board::operator=(const Board &b1) {
+    cellTypes = b1.cellTypes;
+    return *this;
 }

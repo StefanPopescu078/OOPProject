@@ -8,6 +8,7 @@
 class Piece;
 
 #include <array>
+#include <map>
 #include <memory>
 #include <cassert>
 #include "GameConsts.h"
@@ -28,10 +29,11 @@ private:
     std::array<std::array<Terrain, GameConsts::boardSideSize>, GameConsts::boardSideSize> cellTypes; // matricea tipurilor de teren
 public:
     Board();
-    Board(Board & b1);
-    virtual ~Board();
-    Terrain getTerrain(const int & x, const int & y) const;
-    std::shared_ptr<Piece> getPiece(const int & x, const int & y) const;
+    Board(const Board & b1);
+    ~Board();
+    Board & operator= (const Board& b2);
+    Terrain getTerrain(int x, int y) const;
+    std::shared_ptr<Piece> getPiece(int x, int y) const;
     friend std::ostream &operator<<(std::ostream &out, const Board &board);
 };
 

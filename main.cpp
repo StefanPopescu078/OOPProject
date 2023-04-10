@@ -8,8 +8,9 @@
 #include <X11/Xlib.h>
 #endif
 
-#include "headers/Game.h"
+#include "headers/GameConsts.h"
 #include "headers/Board.h"
+#include "headers/Game.h"
 #include "headers/Piece.h"
 #include <memory>
 
