@@ -17,7 +17,6 @@
 
 class Game {
 private:
-
     Board table;
     sf::RenderWindow gameWindow;
     TurnTypes currentTurnType;

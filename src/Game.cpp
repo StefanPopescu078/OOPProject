@@ -29,17 +29,17 @@ void Game::runGame() {
                 gameWindow.close();
                 break;
             case sf::Event::KeyPressed:
-                switch (e.key.code) {
-                    case sf::Keyboard::Space:
-                        endTurn();
+                if(e.key.code == sf::Keyboard::Space){
+                    endTurn();
+                    continue;
+                }
+                else if(e.key.code == sf::Keyboard::U){
+                    if(!pastStates.empty()) {
+                        table = pastStates.top().first;
+                        currentTurnType = pastStates.top().second;
+                        pastStates.pop();
                         continue;
-                    case sf::Keyboard::U:
-                        if(!pastStates.empty()) {
-                            table = pastStates.top().first;
-                            currentTurnType = pastStates.top().second;
-                            pastStates.pop();
-                            continue;
-                        }
+                    }
                 }
                 break;
             default:
@@ -50,7 +50,6 @@ void Game::runGame() {
         std::this_thread::sleep_for(100ms);
 
         gameWindow.clear(sf::Color::Black);
-
 
         table.render(gameWindow, (currentTurnType == TurnTypes::redStart || currentTurnType == TurnTypes::red ? sideType::Red : sideType::Blue) );
 

@@ -16,11 +16,11 @@ std::string Flag::troopType() const {
 
 Flag::Flag(const sideType &type) : Piece(type) {}
 
-std::vector<std::pair<int, int>> Flag::canSee(int x, int y, const Board &currentBoard) const {
+std::vector<std::pair<int, int>> Flag::canSee(int x, int y, [[maybe_unused]]const Board &currentBoard) const {
     return {std::make_pair(x, y)};
 }
 
-std::vector<std::pair<int, int>> Flag::accessible(int x, int y, const Board & currentBoard) const {
+std::vector<std::pair<int, int>> Flag::accessible([[maybe_unused]]int x, [[maybe_unused]]int y, [[maybe_unused]]const Board & currentBoard) const {
     return {};
 }
 
@@ -59,11 +59,11 @@ std::string Bomb::troopType() const {
 
 Bomb::Bomb(const sideType &type) : Piece(type) {}
 
-std::vector<std::pair<int, int>> Bomb::canSee(int x, int y, const Board &currentBoard) const {
+std::vector<std::pair<int, int>> Bomb::canSee(int x, int y, [[maybe_unused]]const Board &currentBoard) const {
     return {std::make_pair(x, y)};
 }
 
-std::vector<std::pair<int, int>> Bomb::accessible(int x, int y, const Board & currentBoard) const {
+std::vector<std::pair<int, int>> Bomb::accessible([[maybe_unused]]int x, [[maybe_unused]]int y, [[maybe_unused]]const Board & currentBoard) const {
     return {};
 }
 
@@ -619,11 +619,11 @@ std::string Empty::troopType() const {
 
 Empty::Empty(const sideType &type) : Piece(type) {}
 
-std::vector<std::pair<int, int>> Empty::accessible(int x, int y, const Board & currentBoard) const {
+std::vector<std::pair<int, int>> Empty::accessible([[maybe_unused]]int x, [[maybe_unused]]int y, [[maybe_unused]]const Board & currentBoard) const {
     return {};
 }
 
-std::vector<std::pair<int, int>> Empty::canSee(int x, int y, const Board &currentBoard) const {
+std::vector<std::pair<int, int>> Empty::canSee([[maybe_unused]]int x, [[maybe_unused]]int y, [[maybe_unused]]const Board &currentBoard) const {
     return {};
 }
 

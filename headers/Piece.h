@@ -24,7 +24,7 @@ public:
     explicit Piece(const sideType &);
     Piece(const Piece & p1);
     virtual ~Piece(); // are clase derivate
-    virtual std::vector<std::pair<int, int>> accessible(int x, int y, const Board & currentBoard) const = 0;
+    [[maybe_unused]]virtual std::vector<std::pair<int, int>> accessible(int x, int y, const Board & currentBoard) const = 0;
     virtual int getPassableTerrain() const = 0;
     virtual std::vector<std::pair<int, int>> canSee(int x, int y, const Board & currentBoard) const = 0;
     virtual std::string troopType() const = 0;
