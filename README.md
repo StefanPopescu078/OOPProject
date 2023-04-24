@@ -19,7 +19,7 @@
 - [X] scenariu de utilizare a claselor definite:
   - crearea de obiecte și apelarea funcțiilor membru publice în main
   - vor fi adăugate în fișierul `tastatura.txt` exemple de date de intrare de la tastatură (dacă există)
-- [ ] tag de `git`: de exemplu `v0.1`
+- [X] tag de `git`: de exemplu `v0.1`
 - [X] serviciu de integrare continuă (CI); exemplu: GitHub Actions
 
 ## Tema 2

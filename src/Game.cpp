@@ -8,13 +8,14 @@
 #include <iostream>
 #include <thread>
 
-
-Game::Game() {
-    table = std::unique_ptr<Board>(new Board);
+Game::Game() : table() {
     currentTurnType = TurnTypes::redStart;
 }
 
 void Game::runGame() {
+
+    table.loadTexturePack();
+
     gameWindow.create(sf::VideoMode({GameConsts::windowWidth, GameConsts::windowHeight}), "Stratego", sf::Style::Titlebar | sf::Style::Close);
 
     gameWindow.setVerticalSyncEnabled(true);
@@ -27,28 +28,34 @@ void Game::runGame() {
             case sf::Event::Closed:
                 gameWindow.close();
                 break;
-            case sf::Event::Resized:
-
-                break;
             case sf::Event::KeyPressed:
-                std::cout << "Received key " << (e.key.code == sf::Keyboard::X ? "X" : "(other)") << "\n";
+                switch (e.key.code) {
+                    case sf::Keyboard::Space:
+                        endTurn();
+                        continue;
+                    case sf::Keyboard::U:
+                        if(!pastStates.empty()) {
+                            table = pastStates.top().first;
+                            currentTurnType = pastStates.top().second;
+                            pastStates.pop();
+                            continue;
+                        }
+                }
                 break;
             default:
                 break;
             }
         }
         using namespace std::chrono_literals;
-        std::this_thread::sleep_for(10ms);
+        std::this_thread::sleep_for(100ms);
 
-        gameWindow.clear();
+        gameWindow.clear(sf::Color::Black);
 
+
+        table.render(gameWindow, (currentTurnType == TurnTypes::redStart || currentTurnType == TurnTypes::red ? sideType::Red : sideType::Blue) );
 
         gameWindow.display();
     }
-}
-
-void Game::renderGame() {
-
 }
 
 std::ostream &operator<<(std::ostream &out, const Game &game) {
@@ -56,8 +63,24 @@ std::ostream &operator<<(std::ostream &out, const Game &game) {
     return out;
 }
 
-Game::~Game() {
-
+void Game::endTurn() {
+    pastStates.emplace(table, currentTurnType);
+    switch (currentTurnType) {
+        case TurnTypes::redStart:
+            currentTurnType = TurnTypes::blueStart;
+            break;
+        case TurnTypes::blueStart:
+            currentTurnType = TurnTypes::red;
+            break;
+        case TurnTypes::red:
+            currentTurnType = TurnTypes::blue;
+            break;
+        case TurnTypes::blue:
+            currentTurnType = TurnTypes::red;
+            break;
+    }
 }
+
+Game::~Game() = default;
 
 

@@ -5,33 +5,28 @@
 #ifndef OOP_GAME_H
 #define OOP_GAME_H
 
-class Board;
 
+#include "GameConsts.h"
 #include <ostream>
 #include "Board.h"
 #include <memory>
 #include <array>
-#include <SFML/Graphics.hpp>
-#include "GameConsts.h"
+#include <stack>
 
-enum class TurnTypes{
-    redStart,
-    blueStart,
-    red,
-    blue
-};
+
 
 class Game {
 private:
-    std::unique_ptr<Board> table;
+
+    Board table;
     sf::RenderWindow gameWindow;
     TurnTypes currentTurnType;
-    void renderGame();
+    std::stack<std::pair<Board, TurnTypes> > pastStates;
 public:
     Game();
 
     ~Game();
-
+    void endTurn();
     void runGame();
 
     friend std::ostream &operator<<(std::ostream &os, const Game &game);
