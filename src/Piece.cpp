@@ -673,7 +673,6 @@ std::string Piece::getSide() const{
             return "none";
             break;
     }
-    throw "You shouldn't be here";
 }
 
 void Piece::setSide(const sideType & sd) {
