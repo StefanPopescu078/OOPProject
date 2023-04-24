@@ -652,7 +652,7 @@ Piece::~Piece() = default;
 
 Piece::Piece(const Piece &p1) = default;
 
-Piece::Piece() : side(sideType::None) {}
+Piece::Piece() : side(sideType::NONE) {}
 
 Piece::Piece(const sideType & type) : side(type){ }
 

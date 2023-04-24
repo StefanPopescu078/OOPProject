@@ -37,7 +37,7 @@ Board::Board() {
 
 
     // temporara pentru testare
-    pieces[0][0] = std::make_shared<Empty>(sideType::None);
+    pieces[0][0] = std::make_shared<Empty>(sideType::NONE);
     for(int i = 0; i < GameConsts::boardSideSize; i++)
         for(int j = 0; j < GameConsts::boardSideSize; j++)
             if(i != 0 || j != 0)
@@ -176,7 +176,7 @@ void Board::render(sf::RenderWindow & window, sideType currPlayer) { // incepe r
     if(currPlayer == sideType::Red){
         for(int i = 0; i < GameConsts::boardSideSize; i++)
             for(int j = 0; j < GameConsts::boardSideSize; j++)
-                if(visibleMatrix[i][j] || pieces[i][j] -> selfSideMask() == sideType::None){
+                if(visibleMatrix[i][j] || pieces[i][j] -> selfSideMask() == sideType::NONE){
                     pieces[i][j] -> drawItself(window, j * GameConsts::cellEdge, i * GameConsts::cellEdge);
                 }
                 else{
@@ -189,7 +189,7 @@ void Board::render(sf::RenderWindow & window, sideType currPlayer) { // incepe r
     else{
         for(int i = 0; i < GameConsts::boardSideSize; i++)
             for(int j = 0; j < GameConsts::boardSideSize; j++)
-                if(visibleMatrix[i][j] || pieces[i][j] -> selfSideMask() == sideType::None){
+                if(visibleMatrix[i][j] || pieces[i][j] -> selfSideMask() == sideType::NONE){
                     pieces[i][j] -> drawItself(window, (GameConsts::boardSideSize - 1 - j) * GameConsts::cellEdge, (GameConsts::boardSideSize - 1 - i) * GameConsts::cellEdge);
                 }
                 else{

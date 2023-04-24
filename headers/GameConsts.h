@@ -20,7 +20,7 @@ namespace GameConsts{
 enum sideType{ // trebuie folosite conversiile implicite
     Red = (1 << 0),
     Blue = (1 << 1),
-    None = 0
+    NONE = 0
 };
 
 enum class pieceMask{
