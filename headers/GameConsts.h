@@ -7,6 +7,7 @@
 
 #include <SFML/Graphics.hpp>
 
+
 namespace GameConsts{
     const int boardSideSize = 14;
     const int windowWidth = 14 * 64;

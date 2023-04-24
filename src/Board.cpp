@@ -78,7 +78,7 @@ Board::Board() {
     pieces[13 - 0][13 - 9] = pieces[13 - 0][13 - 10] = pieces[13 - 0][13 - 11] = pieces[13 - 0][13 - 12] =
     pieces[13 - 1][13 - 9] = pieces[13 - 1][13 - 10] = pieces[13 - 1][13 - 11] = pieces[13 - 1][13 - 12] = std::make_shared<Scout>(sideType::Blue);
 
-    pieces[13 - 1][13 - 13] = pieces[13 - 2][13 - 13] = pieces[13 - 3][13 - 13] = pieces[13 - 2][13 - 12] = pieces[13 - 2][13 - 11] = std::make_shared<Miner>(sideType::Blue);
+    pieces[13 - 1][0] = pieces[13 - 2][0] = pieces[13 - 3][0] = pieces[13 - 2][13 - 12] = pieces[13 - 2][13 - 11] = std::make_shared<Miner>(sideType::Blue);
 
     pieces[13 - 1][13 - 0] = pieces[13 - 1][13 - 1] = pieces[13 - 1][13 - 2] = pieces[13 - 1][13 - 3] = std::make_shared<Sergeant>(sideType::Blue);
 
@@ -91,7 +91,8 @@ Board::Board() {
     pieces[13 - 2][13 - 1] = std::make_shared<General>(sideType::Blue);
     pieces[13 - 2][13 - 0] = std::make_shared<Marshal>(sideType::Blue);
 
-
+    pieces[0][0] ->accessible(0, 0, *this);
+    pieces[0][0] ->selfPieceMask();
 }
 
 Board::~Board() = default;
