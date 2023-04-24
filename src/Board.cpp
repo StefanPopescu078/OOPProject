@@ -194,9 +194,9 @@ void Board::render(sf::RenderWindow & window, sideType currPlayer) { // incepe r
                 }
                 else{
                     // se va adauga o noua clasa de piesa mai tarziu
-                    sf::Sprite temp(redQ);
-                    temp.setPosition((GameConsts::boardSideSize - 1 - j) * GameConsts::cellEdge, (GameConsts::boardSideSize - 1 - i) * GameConsts::cellEdge);
-                    window.draw(temp);
+                    sf::Sprite temporary(redQ);
+                    temporary.setPosition((GameConsts::boardSideSize - 1 - j) * GameConsts::cellEdge, (GameConsts::boardSideSize - 1 - i) * GameConsts::cellEdge);
+                    window.draw(temporary);
                 }
     }
 }
