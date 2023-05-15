@@ -37,11 +37,14 @@ Board::Board() {
 
 
     // temporara pentru testare
-    pieces[0][0] = std::make_shared<Empty>(sideType::NONE);
+    ptrEmpty = std::make_shared<Empty>(sideType::NONE);
+//    pieces[0][0] = std::make_shared<Empty>(sideType::NONE);
     for(int i = 0; i < GameConsts::boardSideSize; i++)
         for(int j = 0; j < GameConsts::boardSideSize; j++)
-            if(i != 0 || j != 0)
-                pieces[i][j] = pieces[0][0];
+            pieces[i][j] = ptrEmpty;
+//            if(i != 0 || j != 0)
+//                pieces[i][j] = pieces[0][0];
+
 
     pieces[0][1] = std::make_shared<Flag>(sideType::Red);
 
@@ -107,13 +110,13 @@ std::ostream &operator<<(std::ostream &out, const Board &board) {
 
 Terrain Board::getTerrain(int x, int y) const {
     if(!(x >= 0 && y >= 0 && x < GameConsts::boardSideSize && y < GameConsts::boardSideSize)) // debugging
-        throw "Invalid coordinates in Board::getTerrain";
+        throw rules_error("Invalid coordinates in Board::getTerrain");
     return cellTypes[x][y];
 }
 
 std::shared_ptr<Piece> Board::getPiece(int x, int y) const {
     if(!(x >= 0 && y >= 0 && x < GameConsts::boardSideSize && y < GameConsts::boardSideSize)) // debugging
-        throw "Invalid coordinates in Board::getPiece";
+        throw rules_error("Invalid coordinates in Board::getPiece");
     return pieces[x][y];
 }
 
@@ -173,43 +176,74 @@ void Board::render(sf::RenderWindow & window, sideType currPlayer) { // incepe r
                     visibleMatrix[x.first][x.second] = true;
             }
 
-    if(currPlayer == sideType::Red){
-        for(int i = 0; i < GameConsts::boardSideSize; i++)
-            for(int j = 0; j < GameConsts::boardSideSize; j++)
-                if(visibleMatrix[i][j] || pieces[i][j] -> selfSideMask() == sideType::NONE){
-                    pieces[i][j] -> drawItself(window, j * GameConsts::cellEdge, i * GameConsts::cellEdge);
-                }
-                else{
+    for(int i = 0; i < GameConsts::boardSideSize; i++)
+        for(int j = 0; j < GameConsts::boardSideSize; j++)
+            if(i != isDragged.first || j != isDragged.second) {
+                if (visibleMatrix[i][j] || pieces[i][j]->selfSideMask() == sideType::NONE) {
+                    pieces[i][j]->drawItself(window, j * GameConsts::cellEdge, i * GameConsts::cellEdge);
+                } else {
                     // se va adauga o noua clasa de piesa mai tarziu
-                    sf::Sprite temporary(blueQ);
+                    sf::Sprite temporary(currPlayer == sideType::Red ? blueQ : redQ);
                     temporary.setPosition(j * GameConsts::cellEdge, i * GameConsts::cellEdge);
                     window.draw(temporary);
                 }
-    }
-    else{
-        for(int i = 0; i < GameConsts::boardSideSize; i++)
-            for(int j = 0; j < GameConsts::boardSideSize; j++)
-                if(visibleMatrix[i][j] || pieces[i][j] -> selfSideMask() == sideType::NONE){
-                    pieces[i][j] -> drawItself(window, (GameConsts::boardSideSize - 1 - j) * GameConsts::cellEdge, (GameConsts::boardSideSize - 1 - i) * GameConsts::cellEdge);
-                }
-                else{
-                    // se va adauga o noua clasa de piesa mai tarziu
-                    sf::Sprite temporary(redQ);
-                    temporary.setPosition((GameConsts::boardSideSize - 1 - j) * GameConsts::cellEdge, (GameConsts::boardSideSize - 1 - i) * GameConsts::cellEdge);
-                    window.draw(temporary);
-                }
-    }
+            }
 }
 
 void Board::loadTexturePack(const std::string &filePref) {
     if(!background.loadFromFile("assets/" + filePref + "_background.png"))
-        throw "No _background";
+        throw load_error("No _background");
     if(!redQ.loadFromFile("assets/" + filePref + "_redQ.png"))
-        throw "No _redQ";
+        throw load_error("No _redQ");
     if(!blueQ.loadFromFile("assets/" + filePref + "_blueQ.png"))
-        throw "No _blueQ";
+        throw load_error("No _blueQ");
 
     for(int i = 0; i < GameConsts::boardSideSize; i++)
         for(int j = 0; j < GameConsts::boardSideSize; j++)
             pieces[i][j] -> loadTexture(filePref);
 }
+
+Board &Board::operator=(Board &&b2) {
+    pieces = std::move(b2.pieces);
+    cellTypes = b2.cellTypes;
+    background = b2.background;
+    redQ = b2.redQ;
+    blueQ = b2.blueQ;
+    ptrEmpty = b2.ptrEmpty;
+    return *this;
+}
+
+std::tuple<std::shared_ptr<Piece>, std::shared_ptr<Piece>, bool>
+Board::getOutcomeAttack(const std::shared_ptr<Piece> & attacked, const std::shared_ptr<Piece> & attacker) {
+    if(attacked ->selfPieceMask() == pieceMask::Bomb){
+        if(attacker ->selfPieceMask() == pieceMask::Miner){
+            return std::make_tuple(attacker, ptrEmpty, false);
+        }
+        else{
+            return std::make_tuple(ptrEmpty, ptrEmpty, true);
+        }
+    }
+    if(attacker ->selfPieceMask() == pieceMask::Spy){
+        if(attacked ->selfPieceMask() == pieceMask::Marshal){
+            return std::make_tuple(attacker, ptrEmpty, false);
+        }
+    }
+    if(attacker ->selfPieceMask() == pieceMask::Scout && attacked ->selfPieceMask() == pieceMask::Miner)
+        return std::make_tuple(attacker, ptrEmpty, false);
+
+    if(attacker ->selfPieceMask() >= attacked ->selfPieceMask())
+        return std::make_tuple(attacker, ptrEmpty, false);
+    else
+        return std::make_tuple(attacked, ptrEmpty, false);
+}
+
+std::pair<int, int> Board::isDragged = std::make_pair(-1, -1);
+
+void Board::setDrag(std::pair<int, int> p1) {
+    isDragged = std::move(p1);
+}
+
+void Board::resetDrag() {
+    isDragged = std::make_pair(-1, -1);
+}
+

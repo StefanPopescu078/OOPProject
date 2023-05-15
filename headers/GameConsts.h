@@ -7,7 +7,6 @@
 
 #include <SFML/Graphics.hpp>
 
-
 namespace GameConsts{
     const int boardSideSize = 14;
     const int windowWidth = 14 * 64;
@@ -36,7 +35,7 @@ enum class pieceMask{
     Colonel = (1 << 9),
     General = (1 << 10),
     Marshal = (1 << 11),
-    Empty = (1 << 12)
+    Empty = (1 << 30)
 };
 
 enum class TurnTypes{

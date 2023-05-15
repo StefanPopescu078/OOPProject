@@ -36,17 +36,6 @@ std::shared_ptr<Piece> Flag::clone() const {
     return std::make_shared<Flag>(*this);
 }
 
-void Flag::loadTexture(const std::string &filePref) {
-    if(side == sideType::Red){
-        if(!texture.loadFromFile("assets/" + filePref + "_redFlag.png"))
-            throw "No redFlag";
-    }
-    else{
-        if(!texture.loadFromFile("assets/" + filePref + "_blueFlag.png"))
-            throw "No blueFlag";
-    }
-}
-
 /************************  Bomb  **********************************/
 
 int Bomb::getPassableTerrain() const {
@@ -77,17 +66,6 @@ sideType Bomb::selfSideMask() const {
 
 std::shared_ptr<Piece> Bomb::clone() const {
     return std::make_shared<Bomb>(*this);
-}
-
-void Bomb::loadTexture(const std::string &filePref) {
-    if(side == sideType::Red){
-        if(!texture.loadFromFile("assets/" + filePref + "_redBomb.png"))
-            throw "No redBomb";
-    }
-    else{
-        if(!texture.loadFromFile("assets/" + filePref + "_blueBomb.png"))
-            throw "No blueBomb";
-    }
 }
 
 /************************  Spy  **********************************/
@@ -132,17 +110,6 @@ std::shared_ptr<Piece> Spy::clone() const {
     return std::make_shared<Spy>(*this);
 }
 
-void Spy::loadTexture(const std::string &filePref) {
-    if(side == sideType::Red){
-        if(!texture.loadFromFile("assets/" + filePref + "_redSpy.png"))
-            throw "No redSpy";
-    }
-    else{
-        if(!texture.loadFromFile("assets/" + filePref + "_blueSpy.png"))
-            throw "No blueSpy";
-    }
-}
-
 /************************  Scout  **********************************/
 
 int Scout::getPassableTerrain() const {
@@ -185,26 +152,13 @@ std::shared_ptr<Piece> Scout::clone() const {
     return std::make_shared<Scout>(*this);
 }
 
-void Scout::loadTexture(const std::string &filePref) {
-    if(side == sideType::Red){
-        if(!texture.loadFromFile("assets/" + filePref + "_redScout.png"))
-            throw "No redScout";
-    }
-    else{
-        if(!texture.loadFromFile("assets/" + filePref + "_blueScout.png"))
-            throw "No blueScout";
-    }
-}
-
 /************************  Miner  **********************************/
 
 int Miner::getPassableTerrain() const {
     return Terrain::PLAINS | Terrain::LAKE | Terrain::HILL | Terrain::CRATER;
 }
 
-Miner::Miner(const sideType &type) : Piece(type) {
-
-}
+Miner::Miner(const sideType &type) : Piece(type) { }
 
 std::vector<std::pair<int, int>> Miner::accessible(int x, int y, const Board & currentBoard) const {
     std::vector<std::pair<int, int> > retVec;
@@ -234,17 +188,6 @@ sideType Miner::selfSideMask() const {
 
 std::shared_ptr<Piece> Miner::clone() const {
     return std::make_shared<Miner>(*this);
-}
-
-void Miner::loadTexture(const std::string &filePref) {
-    if(side == sideType::Red){
-        if(!texture.loadFromFile("assets/" + filePref + "_redMiner.png"))
-            throw "No redMiner";
-    }
-    else{
-        if(!texture.loadFromFile("assets/" + filePref + "_blueMiner.png"))
-            throw "No blueMiner";
-    }
 }
 
 /************************  Sergeant  **********************************/
@@ -289,17 +232,6 @@ std::shared_ptr<Piece> Sergeant::clone() const {
     return std::make_shared<Sergeant>(*this);
 }
 
-void Sergeant::loadTexture(const std::string &filePref) {
-    if(side == sideType::Red){
-        if(!texture.loadFromFile("assets/" + filePref + "_red1.png"))
-            throw "No red1";
-    }
-    else{
-        if(!texture.loadFromFile("assets/" + filePref + "_blue1.png"))
-            throw "No blue1";
-    }
-}
-
 /************************  Lieutenant  **********************************/
 
 int Lieutenant::getPassableTerrain() const {
@@ -342,17 +274,6 @@ std::shared_ptr<Piece> Lieutenant::clone() const {
     return std::make_shared<Lieutenant>(*this);
 }
 
-void Lieutenant::loadTexture(const std::string &filePref) {
-    if(side == sideType::Red){
-        if(!texture.loadFromFile("assets/" + filePref + "_red2.png"))
-            throw "No red2";
-    }
-    else{
-        if(!texture.loadFromFile("assets/" + filePref + "_blue2.png"))
-            throw "No blue2";
-    }
-}
-
 /************************  Captain  **********************************/
 
 int Captain::getPassableTerrain() const {
@@ -391,17 +312,6 @@ sideType Captain::selfSideMask() const {
 
 std::shared_ptr<Piece> Captain::clone() const {
     return std::make_shared<Captain>(*this);
-}
-
-void Captain::loadTexture(const std::string &filePref) {
-    if(side == sideType::Red){
-        if(!texture.loadFromFile("assets/" + filePref + "_red3.png"))
-            throw "No red3";
-    }
-    else{
-        if(!texture.loadFromFile("assets/" + filePref + "_blue3.png"))
-            throw "No blue3";
-    }
 }
 
 /************************  Major  **********************************/
@@ -444,17 +354,6 @@ std::shared_ptr<Piece> Major::clone() const {
     return std::make_shared<Major>(*this);
 }
 
-void Major::loadTexture(const std::string &filePref) {
-    if(side == sideType::Red){
-        if(!texture.loadFromFile("assets/" + filePref + "_red4.png"))
-            throw "No red4";
-    }
-    else {
-        if (!texture.loadFromFile("assets/" + filePref + "_blue4.png"))
-            throw "No blue4";
-    }
-}
-
 /************************  Colonel  **********************************/
 
 int Colonel::getPassableTerrain() const {
@@ -493,17 +392,6 @@ sideType Colonel::selfSideMask() const {
 
 std::shared_ptr<Piece> Colonel::clone() const {
     return std::make_shared<Colonel>(*this);
-}
-
-void Colonel::loadTexture(const std::string &filePref) {
-    if(side == sideType::Red){
-        if(!texture.loadFromFile("assets/" + filePref + "_red5.png"))
-            throw "No red5";
-    }
-    else{
-        if(!texture.loadFromFile("assets/" + filePref + "_blue5.png"))
-            throw "No blue5";
-    }
 }
 
 /************************  General  **********************************/
@@ -546,17 +434,6 @@ std::shared_ptr<Piece> General::clone() const {
     return std::make_shared<General>(*this);
 }
 
-void General::loadTexture(const std::string &filePref) {
-    if(side == sideType::Red){
-        if(!texture.loadFromFile("assets/" + filePref + "_red6.png"))
-            throw "No red6";
-    }
-    else{
-        if(!texture.loadFromFile("assets/" + filePref + "_blue6.png"))
-            throw "No blue6";
-    }
-}
-
 /************************  Marshal  **********************************/
 
 int Marshal::getPassableTerrain() const {
@@ -596,17 +473,6 @@ std::shared_ptr<Piece> Marshal::clone() const {
     return std::make_shared<Marshal>(*this);
 }
 
-void Marshal::loadTexture(const std::string &filePref) {
-    if(side == sideType::Red){
-        if(!texture.loadFromFile("assets/" + filePref + "_red7.png"))
-            throw "No red7";
-    }
-    else{
-        if(!texture.loadFromFile("assets/" + filePref + "_blue7.png"))
-            throw "No blue7";
-    }
-}
-
 /************************  Empty  **********************************/
 
 int Empty::getPassableTerrain() const {
@@ -617,7 +483,10 @@ std::string Empty::troopType() const {
     return "Empty";
 }
 
-Empty::Empty(const sideType &type) : Piece(type) {}
+Empty::Empty(const sideType &type) : Piece(type) {
+    if (type != sideType::NONE)
+        throw rules_error("Empty positions of the map can't have colors");
+}
 
 std::vector<std::pair<int, int>> Empty::accessible([[maybe_unused]]int x, [[maybe_unused]]int y, [[maybe_unused]]const Board & currentBoard) const {
     return {};
@@ -639,15 +508,10 @@ std::shared_ptr<Piece> Empty::clone() const {
     return std::make_shared<Empty>(*this);
 }
 
-void Empty::loadTexture(const std::string &filePref) {
-    if(!texture.loadFromFile("assets/" + filePref + "_empty.png"))
-        throw "No empty";
-}
 
 /************************* Piece ***********************************/
 
 Piece::~Piece() = default;
-
 
 
 Piece::Piece(const Piece &p1) = default;
@@ -727,4 +591,11 @@ void Piece::drawItself(sf::RenderWindow &window, int x, int y) const {
     temp.setTexture(texture);
     temp.setPosition(x, y);
     window.draw(temp);
+}
+
+void Piece::loadTexture(const std::string &filePref) {
+    if(filePref != currentTexturePrefix)
+        if(!texture.loadFromFile("assets/" + filePref + "_" + getSide() + troopType() + ".png")){
+            throw load_error("No " + filePref + "_" + getSide() + troopType() + ".png file found under assets");
+        }
 }

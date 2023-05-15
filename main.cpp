@@ -8,10 +8,7 @@
 #include <X11/Xlib.h>
 #endif
 
-#include "headers/GameConsts.h"
-#include "headers/Board.h"
 #include "headers/Game.h"
-#include "headers/Piece.h"
 #include <memory>
 
 int main() {
@@ -19,9 +16,7 @@ int main() {
     XInitThreads();
     #endif
 
-
-    Game joc;
-    joc.runGame();
+    Game::getGame().runGame();
 
     return 0;
 }

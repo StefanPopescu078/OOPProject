@@ -12,10 +12,13 @@ class Board;
 #include <vector>
 #include <ostream>
 #include <string>
+#include "CustomExceptions.h"
+
 
 class Piece{
 protected:
     sideType side;
+    std::string currentTexturePrefix; // variable that stores the current texture prefix
     sf::Texture texture;
     void canSeeHelper(int limV, int limD, int x, int y, const Board & currentBoard, std::vector<std::pair<int, int> > & retVec) const;
     void accessibleHelper(int limV, int limD, int x, int y, const Board & currentBoard, std::vector<std::pair<int, int> > & retVec) const;
@@ -36,7 +39,7 @@ public:
     friend std::ostream & operator << (std::ostream & out, const Piece & p1);
     void drawItself(sf::RenderWindow& window, int x, int y) const;
     virtual std::shared_ptr<Piece> clone() const = 0;
-    virtual void loadTexture(const std::string & filePref) = 0;
+    void loadTexture(const std::string & filePref);
 };
 
 class Flag : public Piece {
@@ -51,7 +54,6 @@ public:
     pieceMask selfPieceMask() const override;
     sideType selfSideMask() const override;
     std::shared_ptr<Piece> clone() const override;
-    void loadTexture(const std::string & filePref) override;
 };
 
 class Bomb : public Piece {
@@ -65,7 +67,6 @@ public:
     pieceMask selfPieceMask() const override;
     sideType selfSideMask() const override;
     std::shared_ptr<Piece> clone() const override;
-    void loadTexture(const std::string & filePref) override;
 };
 
 class Spy : public Piece {
@@ -79,7 +80,6 @@ public:
     pieceMask selfPieceMask() const override;
     sideType selfSideMask() const override;
     std::shared_ptr<Piece> clone() const override;
-    void loadTexture(const std::string & filePref) override;
 };
 
 class Scout : public Piece {
@@ -93,7 +93,6 @@ public:
     pieceMask selfPieceMask() const override;
     sideType selfSideMask() const override;
     std::shared_ptr<Piece> clone() const override;
-    void loadTexture(const std::string & filePref) override;
 };
 
 class Miner : public Piece {
@@ -107,7 +106,6 @@ public:
     pieceMask selfPieceMask() const override;
     sideType selfSideMask() const override;
     std::shared_ptr<Piece> clone() const override;
-    void loadTexture(const std::string & filePref) override;
 };
 
 class Sergeant : public Piece {
@@ -121,7 +119,6 @@ public:
     pieceMask selfPieceMask() const override;
     sideType selfSideMask() const override;
     std::shared_ptr<Piece> clone() const override;
-    void loadTexture(const std::string & filePref) override;
 };
 
 class Lieutenant : public Piece {
@@ -135,7 +132,6 @@ public:
     pieceMask selfPieceMask() const override;
     sideType selfSideMask() const override;
     std::shared_ptr<Piece> clone() const override;
-    void loadTexture(const std::string & filePref) override;
 };
 
 class Captain : public Piece {
@@ -149,7 +145,6 @@ public:
     pieceMask selfPieceMask() const override;
     sideType selfSideMask() const override;
     std::shared_ptr<Piece> clone() const override;
-    void loadTexture(const std::string & filePref) override;
 };
 
 class Major : public Piece {
@@ -163,7 +158,6 @@ public:
     pieceMask selfPieceMask() const override;
     sideType selfSideMask() const override;
     std::shared_ptr<Piece> clone() const override;
-    void loadTexture(const std::string & filePref) override;
 };
 
 class Colonel : public Piece {
@@ -177,7 +171,6 @@ public:
     pieceMask selfPieceMask() const override;
     sideType selfSideMask() const override;
     std::shared_ptr<Piece> clone() const override;
-    void loadTexture(const std::string & filePref) override;
 };
 
 class General : public Piece {
@@ -191,7 +184,6 @@ public:
     pieceMask selfPieceMask() const override;
     sideType selfSideMask() const override;
     std::shared_ptr<Piece> clone() const override;
-    void loadTexture(const std::string & filePref) override;
 };
 
 class Marshal: public Piece {
@@ -205,7 +197,6 @@ public:
     pieceMask selfPieceMask() const override;
     sideType selfSideMask() const override;
     std::shared_ptr<Piece> clone() const override;
-    void loadTexture(const std::string & filePref) override;
 };
 
 class Empty: public Piece {
@@ -219,7 +210,6 @@ public:
     pieceMask selfPieceMask() const override;
     sideType selfSideMask() const override;
     std::shared_ptr<Piece> clone() const override;
-    void loadTexture(const std::string & filePref) override;
 };
 
 #endif //OOP_PIECE_H
