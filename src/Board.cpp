@@ -188,15 +188,22 @@ void Board::render(sf::RenderWindow & window, sideType currPlayer) { // incepe r
                     window.draw(temporary);
                 }
             }
+    for(auto &x:toBeHighlighted){
+        sf::Sprite temporary(accs);
+        temporary.setPosition(x.second * GameConsts::cellEdge, x.first * GameConsts::cellEdge);
+        window.draw(temporary);
+    }
 }
 
 void Board::loadTexturePack(const std::string &filePref) {
     if(!background.loadFromFile("assets/" + filePref + "_background.png"))
-        throw load_error("No _background");
+        throw load_error("_background");
     if(!redQ.loadFromFile("assets/" + filePref + "_redQ.png"))
-        throw load_error("No _redQ");
+        throw load_error("_redQ");
     if(!blueQ.loadFromFile("assets/" + filePref + "_blueQ.png"))
-        throw load_error("No _blueQ");
+        throw load_error("_blueQ");
+    if(!accs.loadFromFile("assets/" + filePref + "_accs.png"))
+        throw load_error("_accs");
 
     for(int i = 0; i < GameConsts::boardSideSize; i++)
         for(int j = 0; j < GameConsts::boardSideSize; j++)
@@ -247,3 +254,8 @@ void Board::resetDrag() {
     isDragged = std::make_pair(-1, -1);
 }
 
+std::vector<std::pair<int, int> > Board::toBeHighlighted = {};
+
+void Board::setAcc(std::vector<std::pair<int, int>> temp) {
+    toBeHighlighted = std::move(temp);
+}

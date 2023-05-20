@@ -52,20 +52,23 @@ void Game::runGame() {
                 }
                 break;
             case sf::Event::MouseButtonPressed:
-                if(e.mouseButton.button == sf::Mouse::Left)
+                if(e.mouseButton.button == sf::Mouse::Left){
                     if((e.mouseButton.x >= 0 && e.mouseButton.x < GameConsts::windowHeight) && (e.mouseButton.y >= 0 && e.mouseButton.y < GameConsts::windowWidth) ){
-                        int pX = e.mouseButton.x / GameConsts::cellEdge, pY = e.mouseButton.y / GameConsts::cellEdge;
+                        int pY = e.mouseButton.x / GameConsts::cellEdge, pX = e.mouseButton.y / GameConsts::cellEdge;
+                        std::cerr << e.mouseButton.x << " " << e.mouseButton.y << "\n";
                         Board::setDrag(std::make_pair(pX, pY));
                         dragPiece(pX, pY);
                         Board::resetDrag();
                     }
+                }
+
 
             default:
                 break;
             }
         }
         using namespace std::chrono_literals;
-        std::this_thread::sleep_for(100ms);
+        std::this_thread::sleep_for(50ms);
 
         gameWindow.clear(sf::Color::Black);
 
@@ -134,8 +137,36 @@ void Game::alert(const std::string & msg) {
     }
 }
 
-void Game::dragPiece(int pX, int pY) {
-    auto accesiblePos = this -> table.getPiece(pX, pY) -> accessible(pX, pY, table);
+/// true daca dragging-ul a avut succes
+bool Game::dragPiece(int pX, int pY) {
+    std::cerr << pX << " " << pY << "\n";
+    auto accessiblePos = this -> table.getPiece(pX, pY) -> accessible(pX, pY, table);
+    Board::setAcc(accessiblePos);
+    int lastX = -1, lastY = -1;
+    while(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+//        std::cerr << "HELEKAROPEI\n";
+        sf::Vector2i cursor = sf::Mouse::getPosition(gameWindow); // pixel-ul la care e pozitionat mouse-ul
 
+
+
+        cursor.x = std::min(std::max(cursor.x, 0), GameConsts::windowHeight - 1) ;
+        cursor.y = std::min(std::max(cursor.y, 0), GameConsts::windowWidth - 1);
+
+        lastY = cursor.x / GameConsts::cellEdge;
+        lastX = cursor.y / GameConsts::cellEdge;
+
+        table.render(gameWindow, (currentTurnType == TurnTypes::redStart || currentTurnType == TurnTypes::red ? sideType::Red : sideType::Blue));
+        table.getPiece(pX, pY) -> drawItself(gameWindow, cursor.x - GameConsts::cellEdge / 2, cursor.y - GameConsts::cellEdge / 2);
+        gameWindow.display();
+    }
+    Board::setAcc(std::vector<std::pair<int, int>>());
+    // la momentul actual e garantat ca pointer-ul mouse-ului arata spre o pozitie valida
+    if(std::find(accessiblePos.begin(), accessiblePos.end(), std::make_pair(lastX, lastY)) != accessiblePos.end()){
+
+        return true;
+    }
+    else{
+        return false;
+    }
 }
 

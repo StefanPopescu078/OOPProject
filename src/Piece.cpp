@@ -2,6 +2,8 @@
 // Created by Popescu Stefan on Apr 2, 2023.
 //
 
+#include <utility>
+
 #include "../headers/Piece.h"
 
 /************************  Flag  **********************************/
@@ -188,6 +190,61 @@ sideType Miner::selfSideMask() const {
 
 std::shared_ptr<Piece> Miner::clone() const {
     return std::make_shared<Miner>(*this);
+}
+
+/************************  MilitaryPiece  **********************************/
+
+template<bool canTakeCrater, bool canTakeHill, int canOrt, int canDiag, int seeOrt, int seeDiag>
+MilitaryPiece<canTakeCrater, canTakeHill, canOrt, canDiag, seeOrt, seeDiag>::MilitaryPiece(const sideType & type,
+                                                                          const pieceMask & pMask, std::string name) : MilitaryBasePiece(type, pMask, name) {}
+
+template<bool canTakeCrater, bool canTakeHill, int canOrt, int canDiag, int seeOrt, int seeDiag>
+int MilitaryPiece<canTakeCrater, canTakeHill, canOrt, canDiag, seeOrt, seeDiag>::getPassableTerrain() const {
+    return Terrain::PLAINS | (canTakeCrater ? Terrain::CRATER : 0) | (canTakeHill ? Terrain::HILL : 0);
+    // avand in vedere ca linia de mai sus e dependenta de lucruri cunoscute strict la compilare,
+    // ar trebui sa se comporte precum un constexpr
+}
+
+template<bool canTakeCrater, bool canTakeHill, int canOrt, int canDiag, int seeOrt, int seeDiag>
+std::vector<std::pair<int, int>>
+MilitaryPiece<canTakeCrater, canTakeHill, canOrt, canDiag, seeOrt, seeDiag>::canSee(int x, int y, const Board &currentBoard) const {
+    std::vector<std::pair<int, int> > retVec;
+    retVec.emplace_back(x, y);
+    if(currentBoard.getTerrain(x, y) != Terrain::CRATER)
+        canSeeHelper(seeOrt, seeDiag, x, y, currentBoard, retVec);
+    return retVec;
+}
+
+template<bool canTakeCrater, bool canTakeHill, int canOrt, int canDiag, int seeOrt, int seeDiag>
+std::vector<std::pair<int, int>>
+MilitaryPiece<canTakeCrater, canTakeHill, canOrt, canDiag, seeOrt, seeDiag>::accessible(int x, int y, const Board &currentBoard) const {
+    std::vector<std::pair<int, int> > retVec;
+    retVec.emplace_back(x, y);
+    if(currentBoard.getTerrain(x, y) == Terrain::CRATER)
+        accessibleHelper(1, 1, x, y, currentBoard, retVec);
+    else
+        accessibleHelper(canOrt, canDiag, x, y, currentBoard, retVec);
+    return retVec;
+}
+
+template<bool canTakeCrater, bool canTakeHill, int canOrt, int canDiag, int seeOrt, int seeDiag>
+std::shared_ptr<Piece> MilitaryPiece<canTakeCrater, canTakeHill, canOrt, canDiag, seeOrt, seeDiag>::clone() const {
+    return std::make_shared<MilitaryPiece<canTakeCrater, canTakeHill, canOrt, canDiag, seeOrt, seeDiag> >(*this);
+}
+
+template<bool canTakeCrater, bool canTakeHill, int canOrt, int canDiag, int seeOrt, int seeDiag>
+std::string MilitaryPiece<canTakeCrater, canTakeHill, canOrt, canDiag, seeOrt, seeDiag>::troopType() const {
+    return selfName;
+}
+
+template<bool canTakeCrater, bool canTakeHill, int canOrt, int canDiag, int seeOrt, int seeDiag>
+pieceMask MilitaryPiece<canTakeCrater, canTakeHill, canOrt, canDiag, seeOrt, seeDiag>::selfPieceMask() const {
+    return selfMask;
+}
+
+template<bool canTakeCrater, bool canTakeHill, int canOrt, int canDiag, int seeOrt, int seeDiag>
+sideType MilitaryPiece<canTakeCrater, canTakeHill, canOrt, canDiag, seeOrt, seeDiag>::selfSideMask() const {
+    return side;
 }
 
 /************************  Sergeant  **********************************/
@@ -513,7 +570,6 @@ std::shared_ptr<Piece> Empty::clone() const {
 
 Piece::~Piece() = default;
 
-
 Piece::Piece(const Piece &p1) = default;
 
 Piece::Piece() : side(sideType::NONE) {}
@@ -599,3 +655,44 @@ void Piece::loadTexture(const std::string &filePref) {
             throw load_error("No " + filePref + "_" + getSide() + troopType() + ".png file found under assets");
         }
 }
+
+/************************* MilitaryFactory ***********************************/
+
+
+std::shared_ptr<Piece> MilitaryFactory::getSergeant(const sideType & sd) {
+    return std::make_shared<MilitaryPiece<true, true, 3, 3, 1, 1>>(sd, pieceMask::Sergeant, "Sergeant");
+}
+
+std::shared_ptr<Piece> MilitaryFactory::getLieutenant(const sideType & sd) {
+    return std::make_shared<MilitaryPiece<true, true, 3, 3, 1, 1>>(sd, pieceMask::Lieutenant, "Lieutenant");
+}
+
+std::shared_ptr<Piece> MilitaryFactory::getCaptain(const sideType & sd) {
+    return std::make_shared<MilitaryPiece<true, true, 3, 3, 1, 1>>(sd, pieceMask::Captain, "Captain");
+}
+
+std::shared_ptr<Piece> MilitaryFactory::getMajor(const sideType & sd) {
+    return std::make_shared<MilitaryPiece<true, true, 3, 3, 1, 1>>(sd, pieceMask::Major, "Major");
+}
+
+std::shared_ptr<Piece> MilitaryFactory::getColonel(const sideType & sd) {
+    return std::make_shared<MilitaryPiece<true, true, 3, 3, 1, 1>>(sd, pieceMask::Colonel, "Colonel");
+}
+
+std::shared_ptr<Piece> MilitaryFactory::getGeneral(const sideType & sd) {
+    return std::make_shared<MilitaryPiece<true, true, 3, 3, 1, 1>>(sd, pieceMask::General, "General");
+}
+
+/************************* MilitaryBasePiece ***********************************/
+
+
+void MilitaryBasePiece::playDrums() const {
+    sf::SoundBuffer buff;
+    if(!buff.loadFromFile("assets/marchingSound.wav"))
+        throw load_error("drums");
+    sf::Sound snd;
+    snd.setBuffer(buff);
+    snd.play();
+}
+
+MilitaryBasePiece::MilitaryBasePiece(const sideType & sd, const pieceMask & pMask, std::string name) : Piece(sd), selfMask(pMask), selfName(std::move(name)) { }

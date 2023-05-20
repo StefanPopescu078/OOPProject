@@ -29,7 +29,7 @@ public:
     Game(const Game&) = delete;
     ~Game();
     void endTurn();
-    void dragPiece(int, int);
+    bool dragPiece(int, int);
     // at the end of run, the game object is invalidated
     void runGame(); // la sfarsitul lui run, obiectul de joc este invalidat
 

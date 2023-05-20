@@ -6,6 +6,7 @@
 #define OOP_GAMECONSTS_H
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 
 namespace GameConsts{
     const int boardSideSize = 14;

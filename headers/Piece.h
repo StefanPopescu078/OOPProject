@@ -108,6 +108,47 @@ public:
     std::shared_ptr<Piece> clone() const override;
 };
 
+class MilitaryBasePiece : public Piece{ // serveste drept wrapper
+protected:
+    pieceMask selfMask;
+    std::string selfName;
+public:
+    explicit MilitaryBasePiece(const sideType&, const pieceMask&, std::string);
+    virtual void playDrums() const;
+    std::vector<std::pair<int, int>> accessible(int x, int y, const Board & currentBoard) const override = 0;
+    int getPassableTerrain() const override = 0;
+    std::vector<std::pair<int, int>> canSee(int x, int y, const Board & currentBoard) const override = 0;
+    std::string troopType() const override = 0;
+    pieceMask selfPieceMask() const override = 0;
+    sideType selfSideMask() const override = 0;
+    std::shared_ptr<Piece> clone() const override = 0;
+};
+
+// argumentele
+
+template<bool canTakeCrater, bool canTakeHill, int canOrt, int canDiag, int seeOrt, int seeDiag>
+class MilitaryPiece : public MilitaryBasePiece{
+public:
+    explicit MilitaryPiece(const sideType&, const pieceMask&, std::string);
+    std::vector<std::pair<int, int>> accessible(int x, int y, const Board & currentBoard) const override;
+    int getPassableTerrain() const override;
+    std::vector<std::pair<int, int>> canSee(int x, int y, const Board & currentBoard) const override;
+    std::string troopType() const override;
+    pieceMask selfPieceMask() const override;
+    sideType selfSideMask() const override;
+    std::shared_ptr<Piece> clone() const override;
+};
+
+class MilitaryFactory{
+public:
+    static std::shared_ptr<Piece> getSergeant(const sideType&);
+    static std::shared_ptr<Piece> getLieutenant(const sideType&);
+    static std::shared_ptr<Piece> getCaptain(const sideType&);
+    static std::shared_ptr<Piece> getMajor(const sideType&);
+    static std::shared_ptr<Piece> getColonel(const sideType&);
+    static std::shared_ptr<Piece> getGeneral(const sideType&);
+};
+
 class Sergeant : public Piece {
 public:
     explicit Sergeant(const sideType &type);
