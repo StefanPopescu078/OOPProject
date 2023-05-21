@@ -58,15 +58,15 @@ Board::Board() {
 
     pieces[1][13] = pieces[2][13] = pieces[3][13] = pieces[2][12] = pieces[2][11] = std::make_shared<Miner>(sideType::Red);
 
-    pieces[1][0] = pieces[1][1] = pieces[1][2] = pieces[1][3] = std::make_shared<Sergeant>(sideType::Red);
+    pieces[1][0] = pieces[1][1] = pieces[1][2] = pieces[1][3] = MilitaryFactory::getSergeant(sideType::Red);
 
-    pieces[1][4] = pieces[1][5] = pieces[1][6] = pieces[1][7] = std::make_shared<Lieutenant>(sideType::Red);
+    pieces[1][4] = pieces[1][5] = pieces[1][6] = pieces[1][7] = MilitaryFactory::getLieutenant(sideType::Red);
 
-    pieces[1][8] = pieces[2][8] = pieces[2][7] = pieces[2][9] = std::make_shared<Captain>(sideType::Red);
+    pieces[1][8] = pieces[2][8] = pieces[2][7] = pieces[2][9] = MilitaryFactory::getCaptain(sideType::Red);
 
-    pieces[2][6] = pieces[2][5] = pieces[2][4] = std::make_shared<Major>(sideType::Red);
-    pieces[2][3] = pieces[2][2] = std::make_shared<Colonel>(sideType::Red);
-    pieces[2][1] = std::make_shared<General>(sideType::Red);
+    pieces[2][6] = pieces[2][5] = pieces[2][4] = MilitaryFactory::getMajor(sideType::Red);
+    pieces[2][3] = pieces[2][2] = MilitaryFactory::getColonel(sideType::Red);
+    pieces[2][1] = MilitaryFactory::getGeneral(sideType::Red);
     pieces[2][0] = std::make_shared<Marshal>(sideType::Red);
 
 
@@ -83,15 +83,15 @@ Board::Board() {
 
     pieces[13 - 1][0] = pieces[13 - 2][0] = pieces[13 - 3][0] = pieces[13 - 2][13 - 12] = pieces[13 - 2][13 - 11] = std::make_shared<Miner>(sideType::Blue);
 
-    pieces[13 - 1][13 - 0] = pieces[13 - 1][13 - 1] = pieces[13 - 1][13 - 2] = pieces[13 - 1][13 - 3] = std::make_shared<Sergeant>(sideType::Blue);
+    pieces[13 - 1][13 - 0] = pieces[13 - 1][13 - 1] = pieces[13 - 1][13 - 2] = pieces[13 - 1][13 - 3] = MilitaryFactory::getSergeant(sideType::Blue);
 
-    pieces[13 - 1][13 - 4] = pieces[13 - 1][13 - 5] = pieces[13 - 1][13 - 6] = pieces[13 - 1][13 - 7] = std::make_shared<Lieutenant>(sideType::Blue);
+    pieces[13 - 1][13 - 4] = pieces[13 - 1][13 - 5] = pieces[13 - 1][13 - 6] = pieces[13 - 1][13 - 7] = MilitaryFactory::getLieutenant(sideType::Blue);
 
-    pieces[13 - 1][13 - 8] = pieces[13 - 2][13 - 8] = pieces[13 - 2][13 - 7] = pieces[13 - 2][13 - 9] = std::make_shared<Captain>(sideType::Blue);
+    pieces[13 - 1][13 - 8] = pieces[13 - 2][13 - 8] = pieces[13 - 2][13 - 7] = pieces[13 - 2][13 - 9] = MilitaryFactory::getCaptain(sideType::Blue);
 
-    pieces[13 - 2][13 - 6] = pieces[13 - 2][13 - 5] = pieces[13 - 2][13 - 4] = std::make_shared<Major>(sideType::Blue);
-    pieces[13 - 2][13 - 3] = pieces[13 - 2][13 - 2] = std::make_shared<Colonel>(sideType::Blue);
-    pieces[13 - 2][13 - 1] = std::make_shared<General>(sideType::Blue);
+    pieces[13 - 2][13 - 6] = pieces[13 - 2][13 - 5] = pieces[13 - 2][13 - 4] = MilitaryFactory::getMajor(sideType::Blue);
+    pieces[13 - 2][13 - 3] = pieces[13 - 2][13 - 2] = MilitaryFactory::getColonel(sideType::Blue);
+    pieces[13 - 2][13 - 1] = MilitaryFactory::getGeneral(sideType::Blue);
     pieces[13 - 2][13 - 0] = std::make_shared<Marshal>(sideType::Blue);
 
     pieces[0][0] ->accessible(0, 0, *this);

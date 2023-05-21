@@ -35,8 +35,8 @@ enum class pieceMask{
     Major = (1 << 8),
     Colonel = (1 << 9),
     General = (1 << 10),
-    Marshal = (1 << 11),
-    Empty = (1 << 30)
+    Marshal = (1 << 30),
+    Empty = 0
 };
 
 enum class TurnTypes{

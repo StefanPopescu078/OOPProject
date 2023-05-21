@@ -3,7 +3,9 @@
 //
 
 #include <utility>
-
+#include <thread>
+#include <chrono>
+#include <iostream>
 #include "../headers/Piece.h"
 
 /************************  Flag  **********************************/
@@ -194,9 +196,28 @@ std::shared_ptr<Piece> Miner::clone() const {
 
 /************************  MilitaryPiece  **********************************/
 
+MilitaryPieceBase::MilitaryPieceBase(const sideType & type, const pieceMask & pMask, std::string name) : Piece(type), selfName(std::move(name)), selfMask(pMask) {}
+
+void MilitaryPieceBase::playDrums() const {
+    sf::SoundBuffer buff;
+
+    if(!buff.loadFromFile("assets/marchingSound.wav"))
+        throw load_error("drums");
+    std::cerr << "jfjfjf\n";
+
+    sf::Sound snd;
+
+    snd.setBuffer(buff);
+    snd.play();
+    while(snd.getStatus() == sf::Sound::Playing){
+        using namespace std::chrono_literals;
+        std::this_thread::sleep_for(100ms);
+    }
+}
+
 template<bool canTakeCrater, bool canTakeHill, int canOrt, int canDiag, int seeOrt, int seeDiag>
 MilitaryPiece<canTakeCrater, canTakeHill, canOrt, canDiag, seeOrt, seeDiag>::MilitaryPiece(const sideType & type,
-                                                                          const pieceMask & pMask, std::string name) : MilitaryBasePiece(type, pMask, name) {}
+                                                                          const pieceMask & pMask, std::string name) : MilitaryPieceBase(type, pMask, name) {}
 
 template<bool canTakeCrater, bool canTakeHill, int canOrt, int canDiag, int seeOrt, int seeDiag>
 int MilitaryPiece<canTakeCrater, canTakeHill, canOrt, canDiag, seeOrt, seeDiag>::getPassableTerrain() const {
@@ -204,6 +225,7 @@ int MilitaryPiece<canTakeCrater, canTakeHill, canOrt, canDiag, seeOrt, seeDiag>:
     // avand in vedere ca linia de mai sus e dependenta de lucruri cunoscute strict la compilare,
     // ar trebui sa se comporte precum un constexpr
 }
+
 
 template<bool canTakeCrater, bool canTakeHill, int canOrt, int canDiag, int seeOrt, int seeDiag>
 std::vector<std::pair<int, int>>
@@ -245,250 +267,6 @@ pieceMask MilitaryPiece<canTakeCrater, canTakeHill, canOrt, canDiag, seeOrt, see
 template<bool canTakeCrater, bool canTakeHill, int canOrt, int canDiag, int seeOrt, int seeDiag>
 sideType MilitaryPiece<canTakeCrater, canTakeHill, canOrt, canDiag, seeOrt, seeDiag>::selfSideMask() const {
     return side;
-}
-
-/************************  Sergeant  **********************************/
-
-int Sergeant::getPassableTerrain() const {
-    return Terrain::PLAINS | Terrain::HILL | Terrain::CRATER;
-}
-
-std::string Sergeant::troopType() const {
-    return "Sergeant";
-}
-
-Sergeant::Sergeant(const sideType &type) : Piece(type) {}
-
-std::vector<std::pair<int, int>> Sergeant::canSee(int x, int y, const Board &currentBoard) const {
-    std::vector<std::pair<int, int> > retVec;
-    retVec.emplace_back(x, y);
-    if(currentBoard.getTerrain(x, y) != Terrain::CRATER)
-        canSeeHelper(1, 1, x, y, currentBoard, retVec);
-    return retVec;
-}
-
-std::vector<std::pair<int, int>> Sergeant::accessible(int x, int y, const Board & currentBoard) const {
-    std::vector<std::pair<int, int> > retVec;
-    retVec.emplace_back(x, y);
-    if(currentBoard.getTerrain(x, y) == Terrain::CRATER)
-        accessibleHelper(1, 1, x, y, currentBoard, retVec);
-    else
-        accessibleHelper(3, 3, x, y, currentBoard, retVec);
-    return retVec;
-}
-
-pieceMask Sergeant::selfPieceMask() const {
-    return pieceMask::Sergeant;
-}
-
-sideType Sergeant::selfSideMask() const {
-    return side;
-}
-
-std::shared_ptr<Piece> Sergeant::clone() const {
-    return std::make_shared<Sergeant>(*this);
-}
-
-/************************  Lieutenant  **********************************/
-
-int Lieutenant::getPassableTerrain() const {
-    return Terrain::PLAINS | Terrain::HILL | Terrain::CRATER;
-}
-
-std::string Lieutenant::troopType() const {
-    return "Lieutenant";
-}
-
-Lieutenant::Lieutenant(const sideType &type) : Piece(type) {}
-
-std::vector<std::pair<int, int>> Lieutenant::canSee(int x, int y, const Board &currentBoard) const {
-    std::vector<std::pair<int, int> > retVec;
-    retVec.emplace_back(x, y);
-    if(currentBoard.getTerrain(x, y) != Terrain::CRATER)
-        canSeeHelper(1, 1, x, y, currentBoard, retVec);
-    return retVec;
-}
-
-std::vector<std::pair<int, int>> Lieutenant::accessible(int x, int y, const Board & currentBoard) const {
-    std::vector<std::pair<int, int> > retVec;
-    retVec.emplace_back(x, y);
-    if(currentBoard.getTerrain(x, y) == Terrain::CRATER)
-        accessibleHelper(1, 1, x, y, currentBoard, retVec);
-    else
-        accessibleHelper(3, 1, x, y, currentBoard, retVec);
-    return retVec;
-}
-
-pieceMask Lieutenant::selfPieceMask() const {
-    return pieceMask::Lieutenant;
-}
-
-sideType Lieutenant::selfSideMask() const {
-    return side;
-}
-
-std::shared_ptr<Piece> Lieutenant::clone() const {
-    return std::make_shared<Lieutenant>(*this);
-}
-
-/************************  Captain  **********************************/
-
-int Captain::getPassableTerrain() const {
-    return Terrain::PLAINS | Terrain::HILL;
-}
-
-std::string Captain::troopType() const {
-    return "Captain";
-}
-
-Captain::Captain(const sideType &type) : Piece(type) {}
-
-std::vector<std::pair<int, int>> Captain::canSee(int x, int y, const Board &currentBoard) const {
-    std::vector<std::pair<int, int> > retVec;
-    retVec.emplace_back(x, y);
-    if(currentBoard.getTerrain(x, y) != Terrain::CRATER)
-        canSeeHelper(2, 2, x, y, currentBoard, retVec);
-    return retVec;
-}
-
-std::vector<std::pair<int, int>> Captain::accessible(int x, int y, const Board & currentBoard) const {
-    std::vector<std::pair<int, int> > retVec;
-    retVec.emplace_back(x, y);
-
-    accessibleHelper(2, 2, x, y, currentBoard, retVec);
-    return retVec;
-}
-
-pieceMask Captain::selfPieceMask() const {
-    return pieceMask::Captain;
-}
-
-sideType Captain::selfSideMask() const {
-    return side;
-}
-
-std::shared_ptr<Piece> Captain::clone() const {
-    return std::make_shared<Captain>(*this);
-}
-
-/************************  Major  **********************************/
-
-int Major::getPassableTerrain() const {
-    return Terrain::PLAINS | Terrain::HILL;
-}
-
-std::string Major::troopType() const {
-    return "Major";
-}
-
-Major::Major(const sideType &type) : Piece(type) {}
-
-std::vector<std::pair<int, int>> Major::canSee(int x, int y, const Board &currentBoard) const {
-    std::vector<std::pair<int, int> > retVec;
-    retVec.emplace_back(x, y);
-    if(currentBoard.getTerrain(x, y) != Terrain::CRATER)
-        canSeeHelper(2, 2, x, y, currentBoard, retVec);
-    return retVec;
-}
-
-std::vector<std::pair<int, int>> Major::accessible(int x, int y, const Board & currentBoard) const {
-    std::vector<std::pair<int, int> > retVec;
-    retVec.emplace_back(x, y);
-
-    accessibleHelper(2, 2, x, y, currentBoard, retVec);
-    return retVec;
-}
-
-pieceMask Major::selfPieceMask() const {
-    return pieceMask::Major;
-}
-
-sideType Major::selfSideMask() const {
-    return side;
-}
-
-std::shared_ptr<Piece> Major::clone() const {
-    return std::make_shared<Major>(*this);
-}
-
-/************************  Colonel  **********************************/
-
-int Colonel::getPassableTerrain() const {
-    return Terrain::PLAINS | Terrain::HILL;
-}
-
-std::string Colonel::troopType() const {
-    return "Colonel";
-}
-
-Colonel::Colonel(const sideType &type) : Piece(type) {}
-
-std::vector<std::pair<int, int>> Colonel::canSee(int x, int y, const Board &currentBoard) const {
-    std::vector<std::pair<int, int> > retVec;
-    retVec.emplace_back(x, y);
-    if(currentBoard.getTerrain(x, y) != Terrain::CRATER)
-        canSeeHelper(2, 3, x, y, currentBoard, retVec);
-    return retVec;
-}
-
-std::vector<std::pair<int, int>> Colonel::accessible(int x, int y, const Board & currentBoard) const {
-    std::vector<std::pair<int, int> > retVec;
-    retVec.emplace_back(x, y);
-
-    accessibleHelper(2, 1, x, y, currentBoard, retVec);
-    return retVec;
-}
-
-pieceMask Colonel::selfPieceMask() const {
-    return pieceMask::Colonel;
-}
-
-sideType Colonel::selfSideMask() const {
-    return side;
-}
-
-std::shared_ptr<Piece> Colonel::clone() const {
-    return std::make_shared<Colonel>(*this);
-}
-
-/************************  General  **********************************/
-
-int General::getPassableTerrain() const {
-    return Terrain::PLAINS;
-}
-
-std::string General::troopType() const {
-    return "General";
-}
-
-General::General(const sideType &type) : Piece(type) {}
-
-std::vector<std::pair<int, int>> General::canSee(int x, int y, const Board &currentBoard) const {
-    std::vector<std::pair<int, int> > retVec;
-    retVec.emplace_back(x, y);
-    if(currentBoard.getTerrain(x, y) != Terrain::CRATER)
-        canSeeHelper(3, 3, x, y, currentBoard, retVec);
-    return retVec;
-}
-
-std::vector<std::pair<int, int>> General::accessible(int x, int y, const Board & currentBoard) const {
-    std::vector<std::pair<int, int> > retVec;
-    retVec.emplace_back(x, y);
-
-    accessibleHelper(1, 1, x, y, currentBoard, retVec);
-    return retVec;
-}
-
-pieceMask General::selfPieceMask() const {
-    return pieceMask::General;
-}
-
-sideType General::selfSideMask() const {
-    return side;
-}
-
-std::shared_ptr<Piece> General::clone() const {
-    return std::make_shared<General>(*this);
 }
 
 /************************  Marshal  **********************************/
@@ -605,13 +383,13 @@ void Piece::setSide(const sideType & sd) {
 void Piece::canSeeHelper(int limV, int limD, int x, int y, const Board & currentBoard, std::vector<std::pair<int, int> > & retVec) const {
     for(int k = 0; k < 8; k++){
         for(int i = 1; i <= ((k & 1) ? limD : limV); i++){
-            if(x + i * GameConsts::dx[k] < GameConsts::boardSideSize)
+            if(x + i * GameConsts::dx[k] >= GameConsts::boardSideSize)
                 break;
-            if(x + i * GameConsts::dx[k] >= 0)
+            if(x + i * GameConsts::dx[k] < 0)
                 break;
-            if(y + i * GameConsts::dy[k] < GameConsts::boardSideSize)
+            if(y + i * GameConsts::dy[k] >= GameConsts::boardSideSize)
                 break;
-            if(y + i * GameConsts::dy[k] >= 0)
+            if(y + i * GameConsts::dy[k] < 0)
                 break;
             retVec.emplace_back(x + i * GameConsts::dx[k], y + i * GameConsts::dy[k]);
             if((currentBoard.getPiece(x + i * GameConsts::dx[k], y + i * GameConsts::dy[k]) -> selfSideMask() | selfSideMask()) == 3)
@@ -623,13 +401,13 @@ void Piece::canSeeHelper(int limV, int limD, int x, int y, const Board & current
 void Piece::accessibleHelper(int limV, int limD, int x, int y, const Board &currentBoard, std::vector<std::pair<int, int>> &retVec) const {
     for(int k = 0; k < 8; k++){
         for(int i = 1; i <= ((k & 1) ? limD : limV); i++){
-            if(x + i * GameConsts::dx[k] < GameConsts::boardSideSize)
+            if(x + i * GameConsts::dx[k] >= GameConsts::boardSideSize)
                 break;
-            if(x + i * GameConsts::dx[k] >= 0)
+            if(x + i * GameConsts::dx[k] < 0)
                 break;
-            if(y + i * GameConsts::dy[k] < GameConsts::boardSideSize)
+            if(y + i * GameConsts::dy[k] >= GameConsts::boardSideSize)
                 break;
-            if(y + i * GameConsts::dy[k] >= 0)
+            if(y + i * GameConsts::dy[k] < 0)
                 break;
             if((getPassableTerrain() & currentBoard.getTerrain(x + i * GameConsts::dx[k], y + i * GameConsts::dy[k])) == 0)
                 break;
@@ -664,35 +442,23 @@ std::shared_ptr<Piece> MilitaryFactory::getSergeant(const sideType & sd) {
 }
 
 std::shared_ptr<Piece> MilitaryFactory::getLieutenant(const sideType & sd) {
-    return std::make_shared<MilitaryPiece<true, true, 3, 3, 1, 1>>(sd, pieceMask::Lieutenant, "Lieutenant");
+    return std::make_shared<MilitaryPiece<true, true, 3, 1, 1, 1>>(sd, pieceMask::Lieutenant, "Lieutenant");
 }
 
 std::shared_ptr<Piece> MilitaryFactory::getCaptain(const sideType & sd) {
-    return std::make_shared<MilitaryPiece<true, true, 3, 3, 1, 1>>(sd, pieceMask::Captain, "Captain");
+    return std::make_shared<MilitaryPiece<false, true, 2, 2, 2, 2>>(sd, pieceMask::Captain, "Captain");
 }
 
 std::shared_ptr<Piece> MilitaryFactory::getMajor(const sideType & sd) {
-    return std::make_shared<MilitaryPiece<true, true, 3, 3, 1, 1>>(sd, pieceMask::Major, "Major");
+    return std::make_shared<MilitaryPiece<false, true, 1, 2, 3, 2>>(sd, pieceMask::Major, "Major");
 }
 
 std::shared_ptr<Piece> MilitaryFactory::getColonel(const sideType & sd) {
-    return std::make_shared<MilitaryPiece<true, true, 3, 3, 1, 1>>(sd, pieceMask::Colonel, "Colonel");
+    return std::make_shared<MilitaryPiece<false, true, 2, 1, 2, 3>>(sd, pieceMask::Colonel, "Colonel");
 }
 
 std::shared_ptr<Piece> MilitaryFactory::getGeneral(const sideType & sd) {
-    return std::make_shared<MilitaryPiece<true, true, 3, 3, 1, 1>>(sd, pieceMask::General, "General");
+    return std::make_shared<MilitaryPiece<false, false, 1, 1, 3, 3>>(sd, pieceMask::General, "General");
 }
 
-/************************* MilitaryBasePiece ***********************************/
 
-
-void MilitaryBasePiece::playDrums() const {
-    sf::SoundBuffer buff;
-    if(!buff.loadFromFile("assets/marchingSound.wav"))
-        throw load_error("drums");
-    sf::Sound snd;
-    snd.setBuffer(buff);
-    snd.play();
-}
-
-MilitaryBasePiece::MilitaryBasePiece(const sideType & sd, const pieceMask & pMask, std::string name) : Piece(sd), selfMask(pMask), selfName(std::move(name)) { }

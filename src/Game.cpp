@@ -113,7 +113,7 @@ Game::~Game() = default;
 Game* Game::ptrSelf = nullptr;
 
 void Game::alert(const std::string & msg) {
-    sf::RenderWindow window(sf::VideoMode(200, 50), "alert", sf::Style::Titlebar | sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode(400, 50), "alert", sf::Style::Titlebar | sf::Style::Close);
 
     sf::Font font;
     if (!font.loadFromFile("assets/arial.ttf")){
@@ -143,11 +143,18 @@ bool Game::dragPiece(int pX, int pY) {
     auto accessiblePos = this -> table.getPiece(pX, pY) -> accessible(pX, pY, table);
     Board::setAcc(accessiblePos);
     int lastX = -1, lastY = -1;
+
+    std::thread soundThread;
+
+    if(auto temp = std::dynamic_pointer_cast<MilitaryPieceBase>(table.getPiece(pX, pY))){
+        std::cerr << "ASDFADF\n";
+        soundThread = std::thread([&temp](){
+            temp -> playDrums();
+        });
+    }
+
     while(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-//        std::cerr << "HELEKAROPEI\n";
         sf::Vector2i cursor = sf::Mouse::getPosition(gameWindow); // pixel-ul la care e pozitionat mouse-ul
-
-
 
         cursor.x = std::min(std::max(cursor.x, 0), GameConsts::windowHeight - 1) ;
         cursor.y = std::min(std::max(cursor.y, 0), GameConsts::windowWidth - 1);
@@ -159,7 +166,11 @@ bool Game::dragPiece(int pX, int pY) {
         table.getPiece(pX, pY) -> drawItself(gameWindow, cursor.x - GameConsts::cellEdge / 2, cursor.y - GameConsts::cellEdge / 2);
         gameWindow.display();
     }
+    std::cerr << "asdfasdfasdf\n";
     Board::setAcc(std::vector<std::pair<int, int>>());
+    if(soundThread.joinable())
+        soundThread.join();
+    std::cerr << "asdfasdfasdf\n";
     // la momentul actual e garantat ca pointer-ul mouse-ului arata spre o pozitie valida
     if(std::find(accessiblePos.begin(), accessiblePos.end(), std::make_pair(lastX, lastY)) != accessiblePos.end()){
 

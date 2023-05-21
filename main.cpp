@@ -12,10 +12,10 @@
 #include <memory>
 
 int main() {
-    #ifdef __linux__
-    XInitThreads();
-    #endif
 
+#ifdef __linux__
+    XInitThreads();
+#endif
     Game::getGame().runGame();
 
     return 0;

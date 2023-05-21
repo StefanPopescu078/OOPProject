@@ -108,28 +108,20 @@ public:
     std::shared_ptr<Piece> clone() const override;
 };
 
-class MilitaryBasePiece : public Piece{ // serveste drept wrapper
+class MilitaryPieceBase : public Piece{
 protected:
-    pieceMask selfMask;
     std::string selfName;
+    pieceMask selfMask;
 public:
-    explicit MilitaryBasePiece(const sideType&, const pieceMask&, std::string);
     virtual void playDrums() const;
-    std::vector<std::pair<int, int>> accessible(int x, int y, const Board & currentBoard) const override = 0;
-    int getPassableTerrain() const override = 0;
-    std::vector<std::pair<int, int>> canSee(int x, int y, const Board & currentBoard) const override = 0;
-    std::string troopType() const override = 0;
-    pieceMask selfPieceMask() const override = 0;
-    sideType selfSideMask() const override = 0;
-    std::shared_ptr<Piece> clone() const override = 0;
+    MilitaryPieceBase(const sideType&, const pieceMask&, std::string);
 };
 
 // argumentele
-
 template<bool canTakeCrater, bool canTakeHill, int canOrt, int canDiag, int seeOrt, int seeDiag>
-class MilitaryPiece : public MilitaryBasePiece{
+class MilitaryPiece : public MilitaryPieceBase{
 public:
-    explicit MilitaryPiece(const sideType&, const pieceMask&, std::string);
+    explicit MilitaryPiece(const sideType&, const pieceMask&, std::string );
     std::vector<std::pair<int, int>> accessible(int x, int y, const Board & currentBoard) const override;
     int getPassableTerrain() const override;
     std::vector<std::pair<int, int>> canSee(int x, int y, const Board & currentBoard) const override;
@@ -147,84 +139,6 @@ public:
     static std::shared_ptr<Piece> getMajor(const sideType&);
     static std::shared_ptr<Piece> getColonel(const sideType&);
     static std::shared_ptr<Piece> getGeneral(const sideType&);
-};
-
-class Sergeant : public Piece {
-public:
-    explicit Sergeant(const sideType &type);
-
-    std::vector<std::pair<int, int>> accessible(int x, int y, const Board & currentBoard) const override;
-    int getPassableTerrain() const override;
-    std::vector<std::pair<int, int>> canSee(int x, int y, const Board & currentBoard) const override;
-    std::string troopType() const override;
-    pieceMask selfPieceMask() const override;
-    sideType selfSideMask() const override;
-    std::shared_ptr<Piece> clone() const override;
-};
-
-class Lieutenant : public Piece {
-public:
-    explicit Lieutenant(const sideType &type);
-
-    std::vector<std::pair<int, int>> accessible(int x, int y, const Board & currentBoard) const override;
-    int getPassableTerrain() const override;
-    std::vector<std::pair<int, int>> canSee(int x, int y, const Board & currentBoard) const override;
-    std::string troopType() const override;
-    pieceMask selfPieceMask() const override;
-    sideType selfSideMask() const override;
-    std::shared_ptr<Piece> clone() const override;
-};
-
-class Captain : public Piece {
-public:
-    explicit Captain(const sideType &type);
-
-    std::vector<std::pair<int, int>> accessible(int x, int y, const Board & currentBoard) const override;
-    int getPassableTerrain() const override;
-    std::vector<std::pair<int, int>> canSee(int x, int y, const Board & currentBoard) const override;
-    std::string troopType() const override;
-    pieceMask selfPieceMask() const override;
-    sideType selfSideMask() const override;
-    std::shared_ptr<Piece> clone() const override;
-};
-
-class Major : public Piece {
-public:
-    explicit Major(const sideType &type);
-
-    std::vector<std::pair<int, int>> accessible(int x, int y, const Board & currentBoard) const override;
-    int getPassableTerrain() const override;
-    std::vector<std::pair<int, int>> canSee(int x, int y, const Board & currentBoard) const override;
-    std::string troopType() const override;
-    pieceMask selfPieceMask() const override;
-    sideType selfSideMask() const override;
-    std::shared_ptr<Piece> clone() const override;
-};
-
-class Colonel : public Piece {
-public:
-    explicit Colonel(const sideType &type);
-
-    std::vector<std::pair<int, int>> accessible(int x, int y, const Board & currentBoard) const override;
-    int getPassableTerrain() const override;
-    std::vector<std::pair<int, int>> canSee(int x, int y, const Board & currentBoard) const override;
-    std::string troopType() const override;
-    pieceMask selfPieceMask() const override;
-    sideType selfSideMask() const override;
-    std::shared_ptr<Piece> clone() const override;
-};
-
-class General : public Piece {
-public:
-    explicit General(const sideType &type);
-
-    std::vector<std::pair<int, int>> accessible(int x, int y, const Board & currentBoard) const override;
-    int getPassableTerrain() const override;
-    std::vector<std::pair<int, int>> canSee(int x, int y, const Board & currentBoard) const override;
-    std::string troopType() const override;
-    pieceMask selfPieceMask() const override;
-    sideType selfSideMask() const override;
-    std::shared_ptr<Piece> clone() const override;
 };
 
 class Marshal: public Piece {
