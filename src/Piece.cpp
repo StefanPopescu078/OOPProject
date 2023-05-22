@@ -203,8 +203,6 @@ void MilitaryPieceBase::playDrums() const {
 
     if(!buff.loadFromFile("assets/marchingSound.wav"))
         throw load_error("drums");
-    std::cerr << "jfjfjf\n";
-
     sf::Sound snd;
 
     snd.setBuffer(buff);

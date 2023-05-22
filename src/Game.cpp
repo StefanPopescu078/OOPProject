@@ -22,7 +22,7 @@ void Game::runGame() {
     }
     catch (const load_error & e) {
         alert(e.what());
-        throw;
+        std::exit(1);
     }
 
     gameWindow.create(sf::VideoMode({GameConsts::windowWidth, GameConsts::windowHeight}), "Stratego", sf::Style::Titlebar | sf::Style::Close);
@@ -55,13 +55,13 @@ void Game::runGame() {
                 if(e.mouseButton.button == sf::Mouse::Left){
                     if((e.mouseButton.x >= 0 && e.mouseButton.x < GameConsts::windowHeight) && (e.mouseButton.y >= 0 && e.mouseButton.y < GameConsts::windowWidth) ){
                         int pY = e.mouseButton.x / GameConsts::cellEdge, pX = e.mouseButton.y / GameConsts::cellEdge;
-                        std::cerr << e.mouseButton.x << " " << e.mouseButton.y << "\n";
-                        Board::setDrag(std::make_pair(pX, pY));
-                        dragPiece(pX, pY);
-                        Board::resetDrag();
+                        if(((int)table.getPiece(pX, pY) -> selfSideMask()) & ((int)currentTurnType)){
+                            Board::setDrag(std::make_pair(pX, pY));
+                            dragPiece(pX, pY);
+                            Board::resetDrag();
+                        }
                     }
                 }
-
 
             default:
                 break;
@@ -139,7 +139,6 @@ void Game::alert(const std::string & msg) {
 
 /// true daca dragging-ul a avut succes
 bool Game::dragPiece(int pX, int pY) {
-    std::cerr << pX << " " << pY << "\n";
     auto accessiblePos = this -> table.getPiece(pX, pY) -> accessible(pX, pY, table);
     Board::setAcc(accessiblePos);
     int lastX = -1, lastY = -1;
@@ -147,7 +146,6 @@ bool Game::dragPiece(int pX, int pY) {
     std::thread soundThread;
 
     if(auto temp = std::dynamic_pointer_cast<MilitaryPieceBase>(table.getPiece(pX, pY))){
-        std::cerr << "ASDFADF\n";
         soundThread = std::thread([&temp](){
             temp -> playDrums();
         });
@@ -166,11 +164,9 @@ bool Game::dragPiece(int pX, int pY) {
         table.getPiece(pX, pY) -> drawItself(gameWindow, cursor.x - GameConsts::cellEdge / 2, cursor.y - GameConsts::cellEdge / 2);
         gameWindow.display();
     }
-    std::cerr << "asdfasdfasdf\n";
     Board::setAcc(std::vector<std::pair<int, int>>());
     if(soundThread.joinable())
         soundThread.join();
-    std::cerr << "asdfasdfasdf\n";
     // la momentul actual e garantat ca pointer-ul mouse-ului arata spre o pozitie valida
     if(std::find(accessiblePos.begin(), accessiblePos.end(), std::make_pair(lastX, lastY)) != accessiblePos.end()){
 

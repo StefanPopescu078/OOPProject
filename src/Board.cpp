@@ -158,11 +158,23 @@ void Board::render(sf::RenderWindow & window, sideType currPlayer) { // incepe r
     temp.setPosition(0, 0);
     temp.setScale(1, 1);
     window.draw(temp);
-//    for(int i = 0; i < GameConsts::boardSideSize; i++)
-//        for(int j = 0; j < GameConsts::boardSideSize; j++){
-//            // afisat terenul
-//        }
-
+    for(int i = 0; i < GameConsts::boardSideSize; i++)
+        for(int j = 0; j < GameConsts::boardSideSize; j++) {
+            switch (cellTypes[i][j]) {
+                case Terrain::FOREST:
+                    break;
+                case Terrain::MOUNTAIN:
+                    break;
+                case Terrain::LAKE:
+                    break;
+                case Terrain::HILL:
+                    break;
+                case Terrain::CRATER:
+                    break;
+                case Terrain::PLAINS:
+                    break;
+            }
+        }
     std::array<std::array<bool, GameConsts::boardSideSize>, GameConsts::boardSideSize> visibleMatrix{};
 
     for(auto &x:visibleMatrix)
@@ -182,7 +194,6 @@ void Board::render(sf::RenderWindow & window, sideType currPlayer) { // incepe r
                 if (visibleMatrix[i][j] || pieces[i][j]->selfSideMask() == sideType::NONE) {
                     pieces[i][j]->drawItself(window, j * GameConsts::cellEdge, i * GameConsts::cellEdge);
                 } else {
-                    // se va adauga o noua clasa de piesa mai tarziu
                     sf::Sprite temporary(currPlayer == sideType::Red ? blueQ : redQ);
                     temporary.setPosition(j * GameConsts::cellEdge, i * GameConsts::cellEdge);
                     window.draw(temporary);

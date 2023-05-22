@@ -39,11 +39,11 @@ enum class pieceMask{
     Empty = 0
 };
 
-enum class TurnTypes{
-    redStart,
-    blueStart,
-    red,
-    blue
+enum TurnTypes : int{
+    redStart = (1 << 0) + (1 << 2),
+    blueStart = (1 << 1) + (1 << 3),
+    red = (1 << 0),
+    blue = (1 << 1)
 };
 
 enum Terrain : int { // tipuri de teren
