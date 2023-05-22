@@ -21,10 +21,9 @@ private:
     static std::vector<std::pair<int, int> > toBeHighlighted;
     static std::pair<int, int> isDragged;
     sf::Texture background, redQ, blueQ, accs;
-    std::shared_ptr<Piece> ptrEmpty; // tinut pentru a suprascrie
+    std::shared_ptr<Piece> ptrEmpty; // tinut pentru a suprascrie in caz de bomba
     // inlocuit cu un getter intr-un object pool ulterior
     // booleana imi spune daca am explozie
-    std::tuple<std::shared_ptr<Piece>, std::shared_ptr<Piece>, bool> getOutcomeAttack(const std::shared_ptr<Piece>&, const std::shared_ptr<Piece>&);
 public:
     Board();
     Board(const Board & b1);
@@ -36,9 +35,12 @@ public:
     static void resetDrag();
     Terrain getTerrain(int x, int y) const;
     std::shared_ptr<Piece> getPiece(int x, int y) const;
+    void explode(int x, int y);
     void render(sf::RenderWindow & window, sideType currPlayer);
     friend std::ostream &operator<<(std::ostream &out, const Board &board);
     void loadTexturePack(const std::string & filePref = "0");
+    void getOutcomeAttack(const std::pair<int, int>&, const std::pair<int, int>&); // modifica starea board-ului
+    bool getOutcomeSwap(const std::pair<int, int>&, const std::pair<int, int>&);
 };
 
 

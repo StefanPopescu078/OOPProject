@@ -72,6 +72,7 @@ std::shared_ptr<Piece> Bomb::clone() const {
     return std::make_shared<Bomb>(*this);
 }
 
+
 /************************  Spy  **********************************/
 
 int Spy::getPassableTerrain() const {
@@ -306,6 +307,7 @@ std::shared_ptr<Piece> Marshal::clone() const {
     return std::make_shared<Marshal>(*this);
 }
 
+
 /************************  Empty  **********************************/
 
 int Empty::getPassableTerrain() const {
@@ -340,6 +342,7 @@ sideType Empty::selfSideMask() const {
 std::shared_ptr<Piece> Empty::clone() const {
     return std::make_shared<Empty>(*this);
 }
+
 
 
 /************************* Piece ***********************************/
@@ -460,7 +463,7 @@ std::shared_ptr<Piece> MilitaryFactory::getGeneral(const sideType & sd) {
 }
 
 
-MobileGeneral::MobileGeneral(const sideType &sd) : MilitaryPiece<true, true, 4, 4, 2, 2>(sd, pieceMask::General, "Mobile General") { }
+MobileGeneral::MobileGeneral(const sideType &sd) : MilitaryPiece<true, true, 4, 4, 2, 2>(sd, pieceMask::General, "MobileGeneral") { }
 
 std::shared_ptr<Piece> MobileGeneral::clone() const {
     return std::make_shared<MobileGeneral>(*this);

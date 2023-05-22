@@ -61,6 +61,7 @@ public:
     explicit Bomb(const sideType &type);
 
     std::vector<std::pair<int, int>> accessible(int x, int y, const Board & currentBoard) const override;
+
     int getPassableTerrain() const override;
     std::vector<std::pair<int, int>> canSee(int x, int y, const Board & currentBoard) const override;
     std::string troopType() const override;
@@ -74,6 +75,7 @@ public:
     explicit Spy(const sideType &type);
 
     std::vector<std::pair<int, int>> accessible(int x, int y, const Board & currentBoard) const override;
+
     int getPassableTerrain() const override;
     std::vector<std::pair<int, int>> canSee(int x, int y, const Board & currentBoard) const override;
     std::string troopType() const override;
@@ -87,6 +89,7 @@ public:
     explicit Scout(const sideType &type);
 
     std::vector<std::pair<int, int>> accessible(int x, int y, const Board & currentBoard) const override;
+
     int getPassableTerrain() const override;
     std::vector<std::pair<int, int>> canSee(int x, int y, const Board & currentBoard) const override;
     std::string troopType() const override;
@@ -100,6 +103,7 @@ public:
     explicit Miner(const sideType &type);
 
     std::vector<std::pair<int, int>> accessible(int x, int y, const Board & currentBoard) const override;
+
     int getPassableTerrain() const override;
     std::vector<std::pair<int, int>> canSee(int x, int y, const Board & currentBoard) const override;
     std::string troopType() const override;
@@ -123,6 +127,7 @@ class MilitaryPiece : public MilitaryPieceBase{
 public:
     explicit MilitaryPiece(const sideType&, const pieceMask&, std::string );
     std::vector<std::pair<int, int>> accessible(int x, int y, const Board & currentBoard) const override;
+
     int getPassableTerrain() const override;
     std::vector<std::pair<int, int>> canSee(int x, int y, const Board & currentBoard) const override;
     std::string troopType() const override;

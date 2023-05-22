@@ -113,7 +113,7 @@ Game::~Game() = default;
 Game* Game::ptrSelf = nullptr;
 
 void Game::alert(const std::string & msg) {
-    sf::RenderWindow window(sf::VideoMode(400, 50), "alert", sf::Style::Titlebar | sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode(800, 50), "alert", sf::Style::Titlebar | sf::Style::Close);
 
     sf::Font font;
     if (!font.loadFromFile("assets/arial.ttf")){
@@ -135,12 +135,14 @@ void Game::alert(const std::string & msg) {
         window.draw(messageText);
         window.display();
     }
+
 }
 
-/// true daca dragging-ul a avut succes
+// true daca dragging-ul a avut succes
 bool Game::dragPiece(int pX, int pY) {
     auto accessiblePos = this -> table.getPiece(pX, pY) -> accessible(pX, pY, table);
-    Board::setAcc(accessiblePos);
+    if(currentTurnType != TurnTypes::redStart && currentTurnType != TurnTypes::blueStart)
+        Board::setAcc(accessiblePos);
     int lastX = -1, lastY = -1;
 
     std::thread soundThread;
@@ -168,11 +170,20 @@ bool Game::dragPiece(int pX, int pY) {
     if(soundThread.joinable())
         soundThread.join();
     // la momentul actual e garantat ca pointer-ul mouse-ului arata spre o pozitie valida
-    if(std::find(accessiblePos.begin(), accessiblePos.end(), std::make_pair(lastX, lastY)) != accessiblePos.end()){
 
-        return true;
+    if(currentTurnType == TurnTypes::redStart || currentTurnType == TurnTypes::blueStart){ // swap-uri
+        std::cerr << lastX << " " << lastY << "\n";
+        if(currentTurnType == TurnTypes::redStart && lastX >= GameConsts::boardSideSize / 2)
+            return false;
+        if(currentTurnType == TurnTypes::blueStart && lastX < GameConsts::boardSideSize / 2)
+            return false;
+        return table.getOutcomeSwap(std::make_pair(lastX, lastY), std::make_pair(pX, pY));
     }
     else{
+        if(std::find(accessiblePos.begin(), accessiblePos.end(), std::make_pair(lastX, lastY)) != accessiblePos.end()){
+            table.getOutcomeAttack(std::make_pair(lastX, lastY), std::make_pair(pX, pY));
+            return true;
+        }
         return false;
     }
 }

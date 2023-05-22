@@ -65,7 +65,8 @@ Board::Board() {
     pieces[1][8] = pieces[2][8] = pieces[2][7] = pieces[2][9] = MilitaryFactory::getCaptain(sideType::Red);
 
     pieces[2][6] = pieces[2][5] = pieces[2][4] = MilitaryFactory::getMajor(sideType::Red);
-    pieces[2][3] = pieces[2][2] = MilitaryFactory::getColonel(sideType::Red);
+    pieces[2][3] = MilitaryFactory::getColonel(sideType::Red);
+    pieces[2][2] = std::make_shared<MobileGeneral>(sideType::Red);
     pieces[2][1] = MilitaryFactory::getGeneral(sideType::Red);
     pieces[2][0] = std::make_shared<Marshal>(sideType::Red);
 
@@ -90,7 +91,8 @@ Board::Board() {
     pieces[13 - 1][13 - 8] = pieces[13 - 2][13 - 8] = pieces[13 - 2][13 - 7] = pieces[13 - 2][13 - 9] = MilitaryFactory::getCaptain(sideType::Blue);
 
     pieces[13 - 2][13 - 6] = pieces[13 - 2][13 - 5] = pieces[13 - 2][13 - 4] = MilitaryFactory::getMajor(sideType::Blue);
-    pieces[13 - 2][13 - 3] = pieces[13 - 2][13 - 2] = MilitaryFactory::getColonel(sideType::Blue);
+    pieces[13 - 2][13 - 3] = MilitaryFactory::getColonel(sideType::Blue);
+    pieces[13 - 2][13 - 2] = std::make_shared<MobileGeneral>(sideType::Blue);
     pieces[13 - 2][13 - 1] = MilitaryFactory::getGeneral(sideType::Blue);
     pieces[13 - 2][13 - 0] = std::make_shared<Marshal>(sideType::Blue);
 
@@ -231,28 +233,39 @@ Board &Board::operator=(Board &&b2) {
     return *this;
 }
 
-std::tuple<std::shared_ptr<Piece>, std::shared_ptr<Piece>, bool>
-Board::getOutcomeAttack(const std::shared_ptr<Piece> & attacked, const std::shared_ptr<Piece> & attacker) {
+void Board::getOutcomeAttack(const std::pair<int, int> & pAttacked, const std::pair<int, int> & pAttacker) {
+    const std::shared_ptr<Piece> & attacked = getPiece(pAttacked.first, pAttacked.second), attacker = getPiece(pAttacker.first, pAttacker.second);
     if(attacked ->selfPieceMask() == pieceMask::Bomb){
-        if(attacker ->selfPieceMask() == pieceMask::Miner){
-            return std::make_tuple(attacker, ptrEmpty, false);
+        if(attacker ->selfPieceMask() == pieceMask::Miner){ // dezamorseaza
+            std::cerr << "jaoisdjFOIAJSDOIFJAOSDJFOIAJSDDFOIJASOIDFJIOASJEFoiasjdo\n";
+            std::tie(pieces[pAttacked.first][pAttacked.second], pieces[pAttacker.first][pAttacker.second] ) =
+                    std::make_tuple(pieces[pAttacker.first][pAttacker.second], ptrEmpty);
         }
-        else{
-            return std::make_tuple(ptrEmpty, ptrEmpty, true);
+        else{ // explozie
+            std::tie(pieces[pAttacked.first][pAttacked.second], pieces[pAttacker.first][pAttacker.second] ) =
+                    std::make_tuple(ptrEmpty, ptrEmpty);
+            explode(pAttacked.first, pAttacked.second);
         }
     }
-    if(attacker ->selfPieceMask() == pieceMask::Spy){
+    else if(attacker ->selfPieceMask() == pieceMask::Spy){
         if(attacked ->selfPieceMask() == pieceMask::Marshal){
-            return std::make_tuple(attacker, ptrEmpty, false);
+            std::tie(pieces[pAttacked.first][pAttacked.second], pieces[pAttacker.first][pAttacker.second] ) =
+                    std::make_tuple(pieces[pAttacker.first][pAttacker.second], ptrEmpty);
         }
     }
-    if(attacker ->selfPieceMask() == pieceMask::Scout && attacked ->selfPieceMask() == pieceMask::Miner)
-        return std::make_tuple(attacker, ptrEmpty, false);
+    else if(attacker ->selfPieceMask() == pieceMask::Scout && attacked ->selfPieceMask() == pieceMask::Miner){
+        std::tie(pieces[pAttacked.first][pAttacked.second], pieces[pAttacker.first][pAttacker.second] ) =
+                std::make_tuple(pieces[pAttacker.first][pAttacker.second], ptrEmpty);
+    }
 
-    if(attacker ->selfPieceMask() >= attacked ->selfPieceMask())
-        return std::make_tuple(attacker, ptrEmpty, false);
-    else
-        return std::make_tuple(attacked, ptrEmpty, false);
+    else if(attacker ->selfPieceMask() >= attacked ->selfPieceMask()){
+        std::tie(pieces[pAttacked.first][pAttacked.second], pieces[pAttacker.first][pAttacker.second] ) =
+                std::make_tuple(pieces[pAttacker.first][pAttacker.second], ptrEmpty);
+    }
+    else{
+        std::tie(pieces[pAttacked.first][pAttacked.second], pieces[pAttacker.first][pAttacker.second] ) =
+                std::make_tuple(pieces[pAttacked.first][pAttacked.second], ptrEmpty);
+    }
 }
 
 std::pair<int, int> Board::isDragged = std::make_pair(-1, -1);
@@ -269,4 +282,19 @@ std::vector<std::pair<int, int> > Board::toBeHighlighted = {};
 
 void Board::setAcc(std::vector<std::pair<int, int>> temp) {
     toBeHighlighted = std::move(temp);
+}
+
+void Board::explode(int x, int y) {
+    if(x < 0 || x >= GameConsts::boardSideSize || y < 0 || y >= GameConsts::boardSideSize)
+        throw rules_error("Explosion out of map");
+    cellTypes[x][y] = Terrain::CRATER;
+}
+
+bool Board::getOutcomeSwap(const std::pair<int, int> & p1, const std::pair<int, int> & p2) {
+    if( (getPiece(p1.first, p1.second) -> getPassableTerrain() & cellTypes[p2.first][p2.second] ) &
+            (getPiece(p2.first, p2.second) -> getPassableTerrain() & cellTypes[p1.first][p1.second] ) ){
+        std::swap(pieces[p1.first][p1.second], pieces[p2.first][p2.second]);
+        return true;
+    }
+    return false;
 }
