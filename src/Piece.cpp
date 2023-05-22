@@ -460,3 +460,14 @@ std::shared_ptr<Piece> MilitaryFactory::getGeneral(const sideType & sd) {
 }
 
 
+MobileGeneral::MobileGeneral(const sideType &sd) : MilitaryPiece<true, true, 4, 4, 2, 2>(sd, pieceMask::General, "Mobile General") { }
+
+std::shared_ptr<Piece> MobileGeneral::clone() const {
+    return std::make_shared<MobileGeneral>(*this);
+}
+
+void MobileGeneral::playDrums() const {
+    // se poate pune un sunet de flaut ca inlocuire
+    MilitaryPieceBase::playDrums();
+}
+

@@ -167,4 +167,12 @@ public:
     std::shared_ptr<Piece> clone() const override;
 };
 
+class MobileGeneral: public MilitaryPiece<true, true, 4, 4, 2, 2>{
+private:
+public:
+    explicit MobileGeneral(const sideType & sd);
+    std::shared_ptr<Piece> clone() const override;
+    void playDrums() const override;
+};
+
 #endif //OOP_PIECE_H
